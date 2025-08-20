@@ -89,14 +89,6 @@ export default function RegisterPage() {
       try {
         const passwordValidation = validatePassword(passwordValue);
 
-        // ✅ Debug için - geçici olarak ekleyebilirsiniz
-        if (
-          process.env.NODE_ENV === "development" &&
-          !passwordValidation.isValid
-        ) {
-          console.log("Password validation result:", passwordValidation.errors);
-        }
-
         setFieldErrors((prev) => ({
           ...prev,
           password: passwordValidation.isValid
