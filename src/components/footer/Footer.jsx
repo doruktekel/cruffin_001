@@ -3,7 +3,10 @@ import SocialMedias from "./SocialMedias";
 
 const Footer = ({ contactInfo, hours }) => {
   return (
-    <footer className="bg-amber-700 text-white py-12 mt-24 w-full" id="contact">
+    <footer
+      className="bg-amber-700 text-white py-12 md:mt-24 mt-20 w-full scroll-mt-32"
+      id="contact"
+    >
       <div className="max-w-7xl mx-auto px-6 space-y-12">
         {/* Üst Bilgiler - 3 Sütun */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-sm sm:text-base">

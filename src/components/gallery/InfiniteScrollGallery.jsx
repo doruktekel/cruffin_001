@@ -30,16 +30,11 @@ const InfiniteScrollGallery = ({ images = [] }) => {
     requestAnimationFrame(step);
   }, []);
 
-  // Eğer images boş ise boş array döndür
-  // if (!images || images.length === 0) {
-  //   return <div>No images available</div>;
-  // }
-
   const repeatedImages = Array.from({ length: 20 }, () => images).flat();
 
   return (
     <section
-      className="w-full overflow-x-scroll no-scrollbar mt-40"
+      className="w-full overflow-x-scroll no-scrollbar md:mt-36 mt-20 scroll-mt-32"
       ref={containerRef}
       id="gallery"
     >
@@ -47,7 +42,7 @@ const InfiniteScrollGallery = ({ images = [] }) => {
         {repeatedImages.map((gallery, index) => (
           <div
             key={`${gallery._id}-${index}`}
-            className="md:w-[400px] md:h-[500px] w-[200px] h-[250px] mx-2 relative shrink-0 rounded-t-full overflow-hidden"
+            className="md:w-[400px] md:h-[500px] w-[300px] h-[400px] mx-2 relative shrink-0 rounded-t-full overflow-hidden"
           >
             <Image
               src={gallery.images}

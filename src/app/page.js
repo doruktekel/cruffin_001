@@ -12,18 +12,8 @@ export default function Home() {
       <Header />
       <Tent />
       <MenuPage />
-      {/* 
-      <video
-        autoPlay
-        muted
-        loop
-        className="w-full h-[600px] object-cover mt-32"
-      >
-        <source src="/yatayvideo.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video> */}
 
-      <div className="relative w-full h-[600px] mt-32 overflow-hidden">
+      <div className="relative w-full h-[600px] mt-20 md:mt-32 overflow-hidden">
         <video
           autoPlay
           muted
@@ -45,7 +35,7 @@ export default function Home() {
         src="/bg_patis.png"
         width={1920}
         height={300}
-        className="w-full h-[300px] object-cover mt-32"
+        className="w-full h-[300px] object-cover mt-20 md:mt-32"
         alt="bg_patis"
       />
 

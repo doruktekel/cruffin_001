@@ -7,7 +7,7 @@ const InfoItems = ({ infos }) => {
   return (
     <section
       id="info"
-      className="max-w-7xl mx-auto flex flex-col gap-24 mt-28 px-4"
+      className="max-w-7xl mx-auto flex flex-col md:gap24 gap-20 mt-20 md:mt-28 md:px-4 px-2 scroll-mt-32"
     >
       {infos.map((info, index) => {
         const isEven = index % 2 === 0;
