@@ -12,6 +12,7 @@ const Header = () => {
         muted
         loop
         className="w-full min-h-screen object-cover -z-10"
+        playsInline
       >
         <source src="/Sequence 03.mp4" type="video/mp4" />
         Your browser does not support the video tag.

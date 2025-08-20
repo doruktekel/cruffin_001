@@ -24,7 +24,13 @@ export default function Home() {
       </video> */}
 
       <div className="relative w-full h-[600px] mt-32 overflow-hidden">
-        <video autoPlay muted loop className="w-full h-full object-cover">
+        <video
+          autoPlay
+          muted
+          loop
+          className="w-full h-full object-cover"
+          playsInline
+        >
           <source src="/yatayvideo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
