@@ -1,6 +1,7 @@
 import UsersEditor from "@/components/dashboard/users/UsersEditor";
 import { UserModel } from "@/lib/models/userModel";
 import connectMongo from "@/lib/mongoDb";
+import { revalidatePath } from "next/cache";
 
 const UsersPage = async () => {
   await connectMongo();
@@ -11,6 +12,8 @@ const UsersPage = async () => {
     ...user,
     _id: user._id.toString(),
   }));
+
+  revalidatePath("/dashboard/users");
 
   return <UsersEditor users={newUsers} />;
 };
