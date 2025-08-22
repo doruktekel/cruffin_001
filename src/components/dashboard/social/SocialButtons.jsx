@@ -2,15 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import useSubmitLinks from "@/hooks/useSubmitLinks";
-import {
-  Facebook,
-  Plus,
-  Save,
-  AlertTriangle,
-  Twitter,
-  Youtube,
-  Instagram,
-} from "lucide-react";
+import { Plus, Save, AlertTriangle } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   DndContext,
@@ -36,6 +28,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  FaFacebook,
+  FaXTwitter,
+  FaInstagram,
+  FaYoutube,
+  FaTiktok,
+  FaLinkedin,
+  FaPinterest,
+  FaReddit,
+  FaTumblr,
+  FaVimeo,
+  FaSpotify,
+} from "react-icons/fa6";
 
 const SocialButtons = ({ newSocials }) => {
   const [links, setLinks] = useState(newSocials || []);
@@ -46,6 +51,13 @@ const SocialButtons = ({ newSocials }) => {
     twitter: "",
     instagram: "",
     youtube: "",
+    tiktok: "",
+    linkedin: "",
+    pinterest: "",
+    reddit: "",
+    tumblr: "",
+    vimeo: "",
+    spotify: "",
   });
   const [deleteDialog, setDeleteDialog] = useState({
     isOpen: false,
@@ -63,24 +75,59 @@ const SocialButtons = ({ newSocials }) => {
 
   const allButtons = [
     {
-      icon: <Facebook size={30} />,
+      icon: <FaFacebook size={30} />,
       label: "Facebook",
       key: "facebook",
     },
     {
-      icon: <Twitter size={30} />,
+      icon: <FaXTwitter size={30} />,
       label: "Twitter",
       key: "twitter",
     },
     {
-      icon: <Instagram size={30} />,
+      icon: <FaInstagram size={30} />,
       label: "Instagram",
       key: "instagram",
     },
     {
-      icon: <Youtube size={30} />,
+      icon: <FaYoutube size={30} />,
       label: "Youtube",
       key: "youtube",
+    },
+    {
+      icon: <FaTiktok size={30} />,
+      label: "Tiktok",
+      key: "tiktok",
+    },
+    {
+      icon: <FaLinkedin size={30} />,
+      label: "Linkedin",
+      key: "linkedin",
+    },
+    {
+      icon: <FaPinterest size={30} />,
+      label: "Pinterest",
+      key: "pinterest",
+    },
+    {
+      icon: <FaReddit size={30} />,
+      label: "Reddit",
+      key: "reddit",
+    },
+    {
+      icon: <FaTumblr size={30} />,
+      label: "Tumblr",
+      key: "tumblr",
+    },
+    {
+      icon: <FaVimeo size={30} />,
+      label: "Vimeo",
+      key: "vimeo",
+    },
+    {
+      icon: <FaSpotify size={30} />,
+      label: "Spotify",
+      key: "spotify",
     },
   ];
 
@@ -98,6 +145,71 @@ const SocialButtons = ({ newSocials }) => {
     const newOrder = arrayMove(activeButtons, oldIndex, newIndex);
     setActiveButtons(newOrder);
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   // 2 saniye içinde tekrar submit'i engelle
+  //   const now = Date.now();
+  //   if (now - lastSubmitTime < 2000) {
+  //     return;
+  //   }
+  //   setLastSubmitTime(now);
+
+  //   const emptyPlatform = activeButtons.find(
+  //     (key) => !socialLinks[key] || socialLinks[key].trim() === ""
+  //   );
+
+  //   if (emptyPlatform) {
+  //     toast.error(`Lütfen ${emptyPlatform} için bir link giriniz.`);
+  //     return;
+  //   }
+
+  //   const linksToSend = activeButtons.map((key, index) => ({
+  //     platform: key,
+  //     url: socialLinks[key],
+  //     order: index,
+  //   }));
+
+  //   try {
+  //     const result = await submitLinks(linksToSend);
+
+  //     if (result) {
+  //       // Başarılı kayıt sonrası tüm state'leri temizle/güncelle
+
+  //       // 1. Silinen butonları tamamen temizle
+  //       setDeletedButtons([]);
+
+  //       // 2. Links state'ini güncel aktif butonlara göre güncelle
+  //       const updatedLinks = linksToSend.map((link, index) => ({
+  //         ...link,
+  //         _id: result[index]?._id || Math.random().toString(36).substr(2, 9),
+  //         order: index,
+  //       }));
+  //       setLinks(updatedLinks);
+
+  //       // 3. SocialLinks state'ini de temizle (silinen platformlar için)
+  //       const cleanedSocialLinks = {};
+  //       activeButtons.forEach((key) => {
+  //         cleanedSocialLinks[key] = socialLinks[key];
+  //       });
+
+  //       // Silinen platformların linklerini temizle
+  //       allButtons.forEach((button) => {
+  //         if (!activeButtons.includes(button.key)) {
+  //           cleanedSocialLinks[button.key] = "";
+  //         }
+  //       });
+
+  //       setSocialLinks(cleanedSocialLinks);
+
+  //       toast.success("Değişiklikler başarıyla kaydedildi!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Kaydetme hatası:", error);
+  //     toast.error("Kaydetme sırasında bir hata oluştu.");
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -130,18 +242,17 @@ const SocialButtons = ({ newSocials }) => {
       if (result) {
         // Başarılı kayıt sonrası tüm state'leri temizle/güncelle
 
-        // 1. Silinen butonları tamamen temizle
-        setDeletedButtons([]);
-
-        // 2. Links state'ini güncel aktif butonlara göre güncelle
+        // 1. Links state'ini güncel aktif butonlara göre güncelle
         const updatedLinks = linksToSend.map((link, index) => ({
           ...link,
-          _id: result[index]?._id || Math.random().toString(36).substr(2, 9),
+          _id:
+            result.newSocialMedia[index]?._id ||
+            Math.random().toString(36).substr(2, 9),
           order: index,
         }));
         setLinks(updatedLinks);
 
-        // 3. SocialLinks state'ini de temizle (silinen platformlar için)
+        // 2. SocialLinks state'ini temizle (silinen platformlar için)
         const cleanedSocialLinks = {};
         activeButtons.forEach((key) => {
           cleanedSocialLinks[key] = socialLinks[key];
@@ -156,6 +267,9 @@ const SocialButtons = ({ newSocials }) => {
 
         setSocialLinks(cleanedSocialLinks);
 
+        // 3. Silinen butonları tamamen temizle - EN SONDA YAPILMALI
+        setDeletedButtons([]);
+
         toast.success("Değişiklikler başarıyla kaydedildi!");
       }
     } catch (error) {
@@ -163,7 +277,6 @@ const SocialButtons = ({ newSocials }) => {
       toast.error("Kaydetme sırasında bir hata oluştu.");
     }
   };
-
   const handleActiveButtonClick = (buttonKey) => () => {
     if (activeButtons.includes(buttonKey)) {
       setActiveButtons(activeButtons.filter((key) => key !== buttonKey));

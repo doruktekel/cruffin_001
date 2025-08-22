@@ -2,19 +2,43 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import {
+  FaFacebook,
+  FaXTwitter,
+  FaInstagram,
+  FaYoutube,
+  FaTiktok,
+  FaLinkedin,
+  FaPinterest,
+  FaReddit,
+  FaTumblr,
+  FaVimeo,
+  FaSpotify,
+} from "react-icons/fa6";
 
 const SocialMedia = ({ socialMedias }) => {
   const [socials, setSocials] = useState(socialMedias);
+
+  // Icon mapping objesi
+  const iconMap = {
+    facebook: FaFacebook,
+    twitter: FaXTwitter,
+    instagram: FaInstagram,
+    youtube: FaYoutube,
+    tiktok: FaTiktok,
+    linkedin: FaLinkedin,
+    pinterest: FaPinterest,
+    reddit: FaReddit,
+    tumblr: FaTumblr,
+    vimeo: FaVimeo,
+    spotify: FaSpotify,
+  };
 
   return (
     <div className="flex justify-center items-center gap-8 text-lg font-family-marcellus">
       {socials &&
         socials.map((item) => {
-          const IconComponent =
-            Icons[
-              item.platform.charAt(0).toUpperCase() + item.platform.slice(1)
-            ];
+          const IconComponent = iconMap[item.platform.toLowerCase()];
           return (
             <Link
               key={item._id}

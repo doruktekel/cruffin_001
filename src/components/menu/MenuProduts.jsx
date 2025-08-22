@@ -2,6 +2,17 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import {
+  FaWheatAwn,
+  FaFireFlameCurved,
+  FaLeaf,
+  FaCarrot,
+} from "react-icons/fa6";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const MenuProducts = ({ products, activeCategory }) => {
   const containerVariants = {
@@ -72,26 +83,51 @@ const MenuProducts = ({ products, activeCategory }) => {
                   ))}
                 </div>
 
-                <div className="flex gap-1 md:gap-2">
+                <div className="flex items-center gap-1 md:gap-2">
                   {product.isVegan && (
-                    <p className="text-sm text-green-500 md:mt-2 mt-1 line-clamp-3">
-                      Vegan
-                    </p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <FaLeaf
+                          className="text-green-400 md:mt-2 mt-1"
+                          size={22}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Vegan</TooltipContent>
+                    </Tooltip>
                   )}
                   {product.isVegetarian && (
-                    <p className="text-sm text-green-700 md:mt-2 mt-1 line-clamp-3">
-                      Vejeteryan
-                    </p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <FaCarrot
+                          className="text-green-700 md:mt-2 mt-1"
+                          size={22}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Vejetaryen</TooltipContent>
+                    </Tooltip>
                   )}
                   {product.isGlutenFree && (
-                    <p className="text-sm text-gray-600 md:mt-2 mt-1 line-clamp-3">
-                      Glutensiz
-                    </p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <FaWheatAwn
+                          className="text-amber-600 md:mt-2 mt-1"
+                          size={22}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Glutensiz</TooltipContent>
+                    </Tooltip>
                   )}
+
                   {product.isSpicy && (
-                    <p className="text-sm text-red-800 md:mt-2 mt-1 line-clamp-3">
-                      Acili
-                    </p>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <FaFireFlameCurved
+                          className="text-red-500 md:mt-2 mt-1"
+                          size={22}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Acılı</TooltipContent>
+                    </Tooltip>
                   )}
                 </div>
               </div>
