@@ -3,16 +3,11 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  FaWheatAwn,
-  FaFireFlameCurved,
-  FaLeaf,
-  FaCarrot,
-} from "react-icons/fa6";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Carrot, Flame, Sprout, Wheat, X } from "lucide-react";
 
 const MenuProducts = ({ products, activeCategory }) => {
   const containerVariants = {
@@ -31,7 +26,7 @@ const MenuProducts = ({ products, activeCategory }) => {
 
   return (
     <motion.div
-      key={activeCategory} // Bu key sayesinde kategori değiştiğinde component yeniden mount olur
+      key={activeCategory}
       className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto mt-10"
       variants={containerVariants}
       initial="hidden"
@@ -41,7 +36,7 @@ const MenuProducts = ({ products, activeCategory }) => {
         (product, index) =>
           product.isAvailable && (
             <motion.div
-              key={product._id} // product._id kullanmak daha güvenli
+              key={product._id}
               className="grid md:grid-cols-4 grid-cols-3 gap-2 md:gap-4 border md:p-2 p-1 md:rounded-xl rounded-md shadow hover:shadow-md transition"
               variants={itemVariants}
             >
@@ -83,36 +78,42 @@ const MenuProducts = ({ products, activeCategory }) => {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-1 md:gap-2">
+                {/* İyileştirilmiş ikonlar */}
+                <div className="flex items-center gap-2 md:gap-3 mt-2">
                   {product.isVegan && (
                     <Tooltip>
-                      <TooltipTrigger>
-                        <FaLeaf
-                          className="text-green-400 md:mt-2 mt-1"
-                          size={22}
-                        />
+                      <TooltipTrigger asChild>
+                        <div className="p-1.5 rounded-full bg-green-50 hover:bg-green-100 transition-colors">
+                          <Sprout className="text-green-600" size={20} />
+                        </div>
                       </TooltipTrigger>
                       <TooltipContent>Vegan</TooltipContent>
                     </Tooltip>
                   )}
+
                   {product.isVegetarian && (
                     <Tooltip>
-                      <TooltipTrigger>
-                        <FaCarrot
-                          className="text-green-700 md:mt-2 mt-1"
-                          size={22}
-                        />
+                      <TooltipTrigger asChild>
+                        <div className="p-1.5 rounded-full bg-orange-50 hover:bg-orange-100 transition-colors">
+                          <Carrot className="text-orange-600" size={20} />
+                        </div>
                       </TooltipTrigger>
                       <TooltipContent>Vejetaryen</TooltipContent>
                     </Tooltip>
                   )}
+
                   {product.isGlutenFree && (
                     <Tooltip>
-                      <TooltipTrigger>
-                        <FaWheatAwn
-                          className="text-amber-600 md:mt-2 mt-1"
-                          size={22}
-                        />
+                      <TooltipTrigger asChild>
+                        <div className="p-1.5 rounded-full bg-amber-50 hover:bg-amber-100 transition-colors relative">
+                          <div className="relative w-5 h-5 flex items-center justify-center">
+                            <Wheat className="text-amber-600" size={20} />
+                            {/* Daha temiz ve merkezi çapraz çizgi */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-6 h-0.5 bg-red-500 rotate-45 rounded-full"></div>
+                            </div>
+                          </div>
+                        </div>
                       </TooltipTrigger>
                       <TooltipContent>Glutensiz</TooltipContent>
                     </Tooltip>
@@ -120,11 +121,10 @@ const MenuProducts = ({ products, activeCategory }) => {
 
                   {product.isSpicy && (
                     <Tooltip>
-                      <TooltipTrigger>
-                        <FaFireFlameCurved
-                          className="text-red-500 md:mt-2 mt-1"
-                          size={22}
-                        />
+                      <TooltipTrigger asChild>
+                        <div className="p-1.5 rounded-full bg-red-50 hover:bg-red-100 transition-colors">
+                          <Flame className="text-red-600" size={20} />
+                        </div>
                       </TooltipTrigger>
                       <TooltipContent>Acılı</TooltipContent>
                     </Tooltip>
