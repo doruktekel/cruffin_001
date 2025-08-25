@@ -129,6 +129,9 @@ export const POST = async (req) => {
 
     console.log("Database'e kaydedilen sonuçlar:", results); // Debug için
 
+    revalidatePath("/dashboard/hours");
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         message: "Çalışma saatleri başarıyla güncellendi.",

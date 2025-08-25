@@ -6,8 +6,6 @@ export const useSubmitInfos = () => {
   const [error, setError] = useState(null);
 
   const submitInfos = async (infosToSend) => {
-    console.log("infosToSend custom hook icinde", infosToSend);
-
     setLoading(true);
     setError(null);
 

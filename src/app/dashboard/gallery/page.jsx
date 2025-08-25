@@ -2,6 +2,8 @@ import GalleryButtons from "@/components/dashboard/gallery/GalleryButtons";
 import { GalleryModel } from "@/lib/models/galleryModel";
 import connectMongo from "@/lib/mongoDb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const GalleryPage = async () => {
   await connectMongo();
 

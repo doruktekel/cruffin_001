@@ -153,6 +153,9 @@ export const POST = async (req) => {
       );
     }
 
+    revalidatePath("/dashboard/users");
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         message: "İşlemler başarıyla tamamlandı.",

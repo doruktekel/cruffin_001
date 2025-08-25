@@ -267,9 +267,8 @@ export const POST = async (req) => {
     }
 
     // ✅ TÜM İLGİLİ SAYFALARI REVALİDATE ET
-    revalidatePath("/dashboard/categories"); // Dashboard kategoriler sayfası
-    revalidatePath("/menu"); // Menu sayfası
-    revalidatePath("/"); // Ana sayfa (eğer kategoriler burada da gösteriliyor)
+    revalidatePath("/dashboard/categories");
+    revalidatePath("/");
 
     return NextResponse.json(
       {

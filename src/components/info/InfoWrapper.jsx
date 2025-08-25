@@ -2,7 +2,8 @@ import { InfoModel } from "@/lib/models/infoModel";
 import connectMongo from "@/lib/mongoDb";
 import InfoItems from "./InfoItems";
 
-// Server Component (çünkü veriyi async olarak çekiyorsun)
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const InfoWrapper = async () => {
   await connectMongo();
 

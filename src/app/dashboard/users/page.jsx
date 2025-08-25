@@ -2,6 +2,9 @@ import UsersEditor from "@/components/dashboard/users/UsersEditor";
 import { UserModel } from "@/lib/models/userModel";
 import connectMongo from "@/lib/mongoDb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const UsersPage = async () => {
   await connectMongo();
 

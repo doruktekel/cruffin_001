@@ -51,6 +51,10 @@ export const POST = async (req) => {
 
     await SocialModel.deleteMany({});
     const newSocialMedia = await SocialModel.insertMany(linksToSend);
+
+    revalidatePath("/dashboard/social");
+    revalidatePath("/");
+
     return NextResponse.json({ newSocialMedia }, { status: 201 });
   } catch (error) {
     return NextResponse.json(

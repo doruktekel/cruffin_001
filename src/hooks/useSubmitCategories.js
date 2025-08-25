@@ -6,8 +6,6 @@ const useSubmitCategories = () => {
   const [error, setError] = useState(null);
 
   const submitCategories = async (categoriesToSend) => {
-    console.log(categoriesToSend);
-
     setLoading(true);
     setError(null);
     try {

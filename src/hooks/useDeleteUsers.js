@@ -6,8 +6,6 @@ export const useDeleteUsers = () => {
   const [error, setError] = useState(null);
 
   const deleteUser = async (userId) => {
-    console.log("deleteUser custom hook içerisinde", userId);
-
     setLoading(true);
     setError(null);
 
@@ -22,7 +20,9 @@ export const useDeleteUsers = () => {
       const data = await res.json();
 
       if (!res.ok || data.error) {
-        throw new Error(data.error || "Kullanıcı silme sırasında bir hata oluştu.");
+        throw new Error(
+          data.error || "Kullanıcı silme sırasında bir hata oluştu."
+        );
       }
 
       toast.success("Kullanıcı başarıyla silindi.");

@@ -32,14 +32,12 @@ export default function DashboardSidebar({
   const pathname = usePathname();
 
   const handleLogout = async (e) => {
-    console.log("logout tiklandi");
     e.preventDefault();
 
     try {
       await userLogout(router);
-      console.log("Logout completed");
     } catch (error) {
-      console.error("Logout failed:", error);
+      // console.error("Logout failed:", error);
       // Hata olsa bile force logout
       router.push("/login");
     }

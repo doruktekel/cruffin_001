@@ -3,6 +3,8 @@ import connectMongo from "@/lib/mongoDb";
 import React from "react";
 import InfiniteScrollGallery from "./InfiniteScrollGallery";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const GalleryWrapper = async () => {
   try {
     await connectMongo();

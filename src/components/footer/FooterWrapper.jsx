@@ -4,6 +4,8 @@ import React from "react";
 import Footer from "./Footer";
 import { WorkingHoursModel } from "@/lib/models/workingHoursModel";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const FooterWrapper = async () => {
   await connectMongo();
 

@@ -1,9 +1,10 @@
 import ProductButtons from "@/components/dashboard/products/ProductButtons";
 import { CategoryModel } from "@/lib/models/categoryModel";
-
 import { ProductModel } from "@/lib/models/productModel";
 import connectMongo from "@/lib/mongoDb";
-import React from "react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const ProductsPage = async () => {
   await connectMongo();

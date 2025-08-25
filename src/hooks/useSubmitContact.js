@@ -6,8 +6,6 @@ export const useSubmitContact = () => {
   const [error, setError] = useState(null);
 
   const submitContact = async (contactData) => {
-    console.log("submitContact custom hook içerisinde", contactData);
-
     setLoading(true);
     setError(null);
 

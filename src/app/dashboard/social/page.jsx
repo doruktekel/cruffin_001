@@ -1,7 +1,9 @@
 import SocialButtons from "@/components/dashboard/social/SocialButtons";
 import { SocialModel } from "@/lib/models/socialModel";
 import connectMongo from "@/lib/mongoDb";
-import React from "react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const SocialPage = async () => {
   await connectMongo();

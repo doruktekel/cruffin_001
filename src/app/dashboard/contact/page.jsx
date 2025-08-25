@@ -2,6 +2,8 @@ import ContactEditor from "@/components/dashboard/contact/ContactEditor";
 import { ContactModel } from "@/lib/models/contactModel";
 import connectMongo from "@/lib/mongoDb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 const ContactPage = async () => {
   await connectMongo();
 

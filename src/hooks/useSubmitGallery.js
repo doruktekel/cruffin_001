@@ -49,8 +49,6 @@ const useSubmitGallery = () => {
     try {
       setLoading(true);
 
-      console.log("Frontend'den gönderilen veri:", galleryItems);
-
       // ✅ DÜZELT: Yeni helper function kullan
       const cleanedItems = galleryItems
         .filter((item) => {
@@ -66,8 +64,6 @@ const useSubmitGallery = () => {
           isActive: item.isActive ?? false,
         }));
 
-      console.log("Temizlenmiş veri:", cleanedItems);
-
       const res = await fetch("/api/gallery", {
         method: "POST",
         headers: {
@@ -77,7 +73,6 @@ const useSubmitGallery = () => {
       });
 
       const data = await res.json();
-      console.log("API'den dönen veri:", data);
 
       if (!res.ok) {
         throw new Error(data.error || "Kayıt başarısız oldu.");

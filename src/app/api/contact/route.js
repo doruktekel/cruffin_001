@@ -78,6 +78,9 @@ export const POST = async (req) => {
       upsert: true,
     });
 
+    revalidatePath("/dashboard/contact");
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         message: "İletişim bilgileri başarıyla güncellendi.",

@@ -6,8 +6,6 @@ const useSubmitProducts = () => {
   const [error, setError] = useState(null);
 
   const submitProducts = async (productsToSend) => {
-    console.log("productsToSend IN CUSTOM HOOK", productsToSend);
-
     setLoading(true);
     setError(null);
     try {

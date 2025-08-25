@@ -4,9 +4,8 @@ import { ProductModel } from "@/lib/models/productModel";
 import MenuWrapper from "./MenuWrapper";
 import { CategoryModel } from "@/lib/models/categoryModel";
 
-// ✅ BU SATIRI EKLE - Server component'in her zaman yeniden çalışmasını sağlar
 export const dynamic = "force-dynamic";
-export const revalidate = 0; // ✅ BU SATIRI DA EKLE
+export const revalidate = 0;
 const MenuPage = async () => {
   await connectMongo();
   const categories = await CategoryModel.find({}).lean();

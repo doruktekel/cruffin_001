@@ -213,7 +213,8 @@ export const POST = async (req) => {
 
     results.sort((a, b) => a.order - b.order);
 
-    console.log("Final results:", results); // ✅ DEBUG
+    revalidatePath("/dashboard/gallery");
+    revalidatePath("/");
 
     return NextResponse.json(
       {

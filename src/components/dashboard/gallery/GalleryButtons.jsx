@@ -177,11 +177,8 @@ const GalleryButtons = ({ newGalleries }) => {
       order: index,
     }));
 
-    console.log("Submit öncesi galleries:", galleries);
-
     const result = await submitGallery(formatted);
     if (result) {
-      console.log("Submit sonrası result:", result);
       toast.success("Görseller başarıyla kaydedildi.");
 
       setGalleries((prevGalleries) => {
@@ -191,10 +188,10 @@ const GalleryButtons = ({ newGalleries }) => {
           const targetIndex = savedItem.order;
 
           if (newGalleries[targetIndex]) {
-            console.log(`Index ${targetIndex} güncelleniyor:`, {
-              eskiImage: newGalleries[targetIndex].image,
-              yeniImage: savedItem.images,
-            });
+            // console.log(`Index ${targetIndex} güncelleniyor:`, {
+            //   eskiImage: newGalleries[targetIndex].image,
+            //   yeniImage: savedItem.images,
+            // });
 
             // ✅ DÜZELT: Dönen veriyi de doğru şekilde işle
             const savedImageUrl = getImageFromGallery(savedItem);
@@ -214,7 +211,6 @@ const GalleryButtons = ({ newGalleries }) => {
           }
         });
 
-        console.log("Güncellenmiş galleries:", newGalleries);
         return newGalleries;
       });
     }

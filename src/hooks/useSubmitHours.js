@@ -10,9 +10,6 @@ const useSubmitHours = () => {
   const submitHours = async (hoursData) => {
     setLoading(true);
     setError(null);
-
-    console.log("Frontend'den custom hooka   gönderilen veri:", hoursData);
-
     try {
       const res = await fetch("/api/hours", {
         method: "POST",

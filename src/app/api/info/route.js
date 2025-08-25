@@ -88,6 +88,9 @@ export const POST = async (req) => {
       }
     }
 
+    revalidatePath("/dashboard/info");
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         message: "Info verileri başarıyla işlendi.",

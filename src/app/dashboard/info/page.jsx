@@ -1,8 +1,9 @@
 import InfoEditor from "@/components/dashboard/info/InfoEditor";
 import { InfoModel } from "@/lib/models/infoModel";
-
 import connectMongo from "@/lib/mongoDb";
-import React from "react";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const InfoPage = async () => {
   await connectMongo();

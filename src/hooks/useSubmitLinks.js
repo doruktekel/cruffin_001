@@ -16,8 +16,6 @@ const useSubmitLinks = () => {
       });
       const data = await res.json();
 
-      console.log(data);
-
       // Eğer response başarılı ise
       if (res.ok) {
         toast.success("Linkler başarıyla kaydedildi!", {});

@@ -219,6 +219,9 @@ export const POST = async (req) => {
       __v: product.__v,
     }));
 
+    revalidatePath("/dashboard/products");
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         message: "Ürünler başarıyla güncellendi.",
