@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import extractPublicId from "@/utils/extractPublicId";
 import cloudinary from "@/lib/cloudinary";
+import { revalidatePath } from "next/cache";
 
 export const POST = async (req) => {
   await connectMongo();

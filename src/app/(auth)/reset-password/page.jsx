@@ -37,13 +37,11 @@ function ResetPasswordForm() {
 
   return (
     <div className="min-h-screen flex flex-col gap-10 items-center justify-center">
-      {/* <Image
-        src={"/Real_Logo_01.png"}
-        width={400}
-        height={100}
-        alt="Dmg_logo"
-      /> */}
-      <h1>LOGO</h1>
+      <div className="flex justify-center items-center">
+        <h1 className="text-6xl text-center font-family-marcellus text-amber-700">
+          Cruffin
+        </h1>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4 w-80">
         <h2 className="text-xl font-semibold text-center">
           Yeni Şifre Belirle

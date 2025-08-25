@@ -272,7 +272,11 @@ export default function RegisterPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <h1>LOGO</h1>
+      <div className="flex justify-center items-center">
+        <h1 className="text-6xl text-center font-family-marcellus text-amber-700">
+          Cruffin
+        </h1>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 w-80">
         <HoneyPot onHoneypotChange={handleHoneypotChange} />
@@ -331,6 +335,12 @@ export default function RegisterPage() {
             onBlur={() => handleFieldTouch("password")}
             required
             autoComplete="new-password"
+            onCopy={(e) => e.preventDefault()}
+            onPaste={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()}
+            onDrag={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+            onSelect={(e) => e.preventDefault()}
             className={`w-full p-4 pr-12 border rounded ${
               fieldErrors.password
                 ? "border-red-500 focus:border-red-500"
@@ -372,6 +382,12 @@ export default function RegisterPage() {
             onBlur={() => handleFieldTouch("confirmPassword")}
             required
             autoComplete="new-password"
+            onCopy={(e) => e.preventDefault()}
+            onPaste={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()}
+            onDrag={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+            onSelect={(e) => e.preventDefault()}
             className={`w-full p-4 pr-12 border rounded ${
               fieldErrors.confirmPassword
                 ? "border-red-500 focus:border-red-500"

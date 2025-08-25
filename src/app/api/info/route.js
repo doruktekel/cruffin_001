@@ -3,6 +3,7 @@ import connectMongo from "@/lib/mongoDb";
 import { NextResponse } from "next/server";
 import protectRoute from "@/lib/protectRoute";
 import { InfoModel } from "@/lib/models/infoModel";
+import { revalidatePath } from "next/cache";
 
 export const POST = async (req) => {
   await connectMongo();

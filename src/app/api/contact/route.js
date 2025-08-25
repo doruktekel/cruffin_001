@@ -2,6 +2,7 @@ import connectMongo from "@/lib/mongoDb";
 import { ContactModel } from "@/lib/models/contactModel";
 import { NextResponse } from "next/server";
 import protectRoute from "@/lib/protectRoute";
+import { revalidatePath } from "next/cache";
 
 // E-posta formatını kontrol eden regex
 const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);

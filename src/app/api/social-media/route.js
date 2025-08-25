@@ -1,6 +1,7 @@
 import { SocialModel } from "@/lib/models/socialModel";
 import connectMongo from "@/lib/mongoDb";
 import protectRoute from "@/lib/protectRoute";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export const POST = async (req) => {

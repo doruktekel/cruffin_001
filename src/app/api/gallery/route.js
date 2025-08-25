@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import protectRoute from "@/lib/protectRoute";
 import { GalleryModel } from "@/lib/models/galleryModel";
 import extractPublicId from "@/utils/extractPublicId";
+import { revalidatePath } from "next/cache";
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 

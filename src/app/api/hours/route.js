@@ -2,6 +2,7 @@ import connectMongo from "@/lib/mongoDb";
 import { WorkingHoursModel } from "@/lib/models/workingHoursModel";
 import { NextResponse } from "next/server";
 import protectRoute from "@/lib/protectRoute";
+import { revalidatePath } from "next/cache";
 
 const validDays = [
   "Monday",
