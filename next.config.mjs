@@ -2,8 +2,7 @@
 // const nextConfig = {
 //   // Mevcut resim ayarların
 //   images: {
-//     // UNUTMA DONT FORGET TO REMOVE UNSPLASH
-//     domains: ["images.unsplash.com", "res.cloudinary.com"],
+//     domains: ["res.cloudinary.com"],
 //   },
 
 //   // Güvenlik için powered-by header'ını kaldır
@@ -40,7 +39,7 @@
 //             value: "1; mode=block",
 //           },
 
-//           // Ana güvenlik politikası - Cloudinary için optimize edilmiş
+//           // Ana güvenlik politikası - API çağrıları için düzeltilmiş
 //           {
 //             key: "Content-Security-Policy",
 //             value: [
@@ -48,9 +47,9 @@
 //               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com",
 //               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 //               // ✅ Cloudinary ve Unsplash için img-src
-//               "img-src 'self' data: https: blob: https://res.cloudinary.com https://images.unsplash.com",
+//               "img-src 'self' data: https: blob: https://res.cloudinary.com ",
 //               "font-src 'self' https://fonts.gstatic.com data:",
-//               // ✅ Cloudinary API çağrıları için
+//               // ✅ DÜZELTME: Kendi API'leriniz için connect-src - 'self' yeterli
 //               "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com",
 //               "frame-src 'none'",
 //               "object-src 'none'",
@@ -86,10 +85,10 @@
 //             ].join(", "),
 //           },
 
-//           // Cross-Origin kaynak paylaşımını kontrol et
+//           // ✅ DÜZELTME: Cross-Origin politikalarını gevşet
 //           {
 //             key: "Cross-Origin-Embedder-Policy",
-//             value: "require-corp",
+//             value: "unsafe-none", // require-corp'dan değiştirildi
 //           },
 
 //           // Cross-Origin açılış politikası
@@ -98,10 +97,10 @@
 //             value: "same-origin",
 //           },
 
-//           // Cross-Origin kaynak politikası
+//           // ✅ DÜZELTME: Cross-Origin kaynak politikası gevşetildi
 //           {
 //             key: "Cross-Origin-Resource-Policy",
-//             value: "same-origin",
+//             value: "cross-origin", // same-origin'dan değiştirildi
 //           },
 //         ],
 //       },
@@ -117,6 +116,22 @@
 //           {
 //             key: "X-Robots-Tag",
 //             value: "noindex, nofollow",
+//           },
+//           // ✅ API routes için CORS header'ları ekle
+//           {
+//             key: "Access-Control-Allow-Origin",
+//             value:
+//               process.env.NODE_ENV === "production"
+//                 ? "https://cruffin-001.vercel.app/" /////////////// Kendi domain'inizi yazın
+//                 : "*",
+//           },
+//           {
+//             key: "Access-Control-Allow-Methods",
+//             value: "GET, POST, PUT, DELETE, OPTIONS",
+//           },
+//           {
+//             key: "Access-Control-Allow-Headers",
+//             value: "Content-Type, Authorization, X-Requested-With",
 //           },
 //         ],
 //       },
@@ -150,6 +165,14 @@ const nextConfig = {
   // Güvenlik için powered-by header'ını kaldır
   poweredByHeader: false,
 
+  // ✅ CACHE SORUNUNU ÇÖZECEK AYARLAR
+  experimental: {
+    staleTimes: {
+      dynamic: 0, // Dynamic sayfalar cache'lenmesin
+      static: 0, // Static sayfalar cache'lenmesin
+    },
+  },
+
   // Güvenlik header'ları
   async headers() {
     return [
@@ -157,7 +180,7 @@ const nextConfig = {
         // Tüm sayfalara güvenlik header'ları uygula
         source: "/(.*)",
         headers: [
-          // Clickjacking koruması - iframe'de gösterilmeyi engeller
+          // Clickjacking koruması
           {
             key: "X-Frame-Options",
             value: "DENY",
@@ -169,7 +192,7 @@ const nextConfig = {
             value: "nosniff",
           },
 
-          // Referrer bilgisi kontrolü - dış sitelere minimum bilgi gönder
+          // Referrer bilgisi kontrolü
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
@@ -181,17 +204,15 @@ const nextConfig = {
             value: "1; mode=block",
           },
 
-          // Ana güvenlik politikası - API çağrıları için düzeltilmiş
+          // Ana güvenlik politikası
           {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              // ✅ Cloudinary ve Unsplash için img-src
-              "img-src 'self' data: https: blob: https://res.cloudinary.com ",
+              "img-src 'self' data: https: blob: https://res.cloudinary.com",
               "font-src 'self' https://fonts.gstatic.com data:",
-              // ✅ DÜZELTME: Kendi API'leriniz için connect-src - 'self' yeterli
               "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com",
               "frame-src 'none'",
               "object-src 'none'",
@@ -227,22 +248,52 @@ const nextConfig = {
             ].join(", "),
           },
 
-          // ✅ DÜZELTME: Cross-Origin politikalarını gevşet
           {
             key: "Cross-Origin-Embedder-Policy",
-            value: "unsafe-none", // require-corp'dan değiştirildi
+            value: "unsafe-none",
           },
 
-          // Cross-Origin açılış politikası
           {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin",
           },
 
-          // ✅ DÜZELTME: Cross-Origin kaynak politikası gevşetildi
           {
             key: "Cross-Origin-Resource-Policy",
-            value: "cross-origin", // same-origin'dan değiştirildi
+            value: "cross-origin",
+          },
+        ],
+      },
+
+      // ✅ DASHBOARD VE DATABASE İÇERİKLERİ İÇİN CACHE DEVRE DIŞI
+      {
+        source: "/dashboard/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, max-age=0",
+          },
+        ],
+      },
+
+      // ✅ MENU SAYFASI İÇİN CACHE DEVRE DIŞI
+      {
+        source: "/menu/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, max-age=0",
+          },
+        ],
+      },
+
+      // ✅ ANA SAYFA İÇİN CACHE DEVRE DIŞI (eğer kategoriler ana sayfada da görünüyorsa)
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, max-age=0",
           },
         ],
       },
@@ -253,18 +304,17 @@ const nextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate",
+            value: "no-store, no-cache, must-revalidate, max-age=0", // ✅ Güçlendirildi
           },
           {
             key: "X-Robots-Tag",
             value: "noindex, nofollow",
           },
-          // ✅ API routes için CORS header'ları ekle
           {
             key: "Access-Control-Allow-Origin",
             value:
               process.env.NODE_ENV === "production"
-                ? "https://cruffin-001.vercel.app/" /////////////// Kendi domain'inizi yazın
+                ? "https://cruffin-001.vercel.app" // ✅ Slash kaldırıldı
                 : "*",
           },
           {
@@ -278,7 +328,7 @@ const nextConfig = {
         ],
       },
 
-      // Static dosyalar için cache ayarları
+      // ✅ STATIC DOSYALAR İÇİN AYARLAR DÜZELTİLDİ
       {
         source: "/_next/static/(.*)",
         headers: [
@@ -286,8 +336,8 @@ const nextConfig = {
             key: "Cache-Control",
             value:
               process.env.NODE_ENV === "production"
-                ? "public, max-age=31536000, immutable"
-                : "no-store, no-cache, must-revalidate",
+                ? "public, max-age=31536000, immutable" // Production'da cache'le
+                : "no-store, no-cache, must-revalidate", // Development'ta cache'leme
           },
         ],
       },
