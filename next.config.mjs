@@ -157,7 +157,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Mevcut resim ayarların
+  // Mevcut resim ayarlarınız
   images: {
     domains: ["res.cloudinary.com"],
   },
@@ -165,12 +165,32 @@ const nextConfig = {
   // Güvenlik için powered-by header'ını kaldır
   poweredByHeader: false,
 
-  // ✅ CACHE SORUNUNU ÇÖZECEK AYARLAR
+  // ✅ CACHE SORUNUNU ÇÖZECEK AYARLAR - GÜÇLENDİRİLDİ
   experimental: {
     staleTimes: {
       dynamic: 0, // Dynamic sayfalar cache'lenmesin
       static: 0, // Static sayfalar cache'lenmesin
     },
+    serverActions: true, // ✅ EKLE
+  },
+
+  // ✅ YENİ: Force no cache için
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/dashboard/:path*",
+          destination: "/dashboard/:path*",
+          has: [
+            {
+              type: "header",
+              key: "cache-control",
+              value: "no-cache",
+            },
+          ],
+        },
+      ],
+    };
   },
 
   // Güvenlik header'ları
@@ -185,26 +205,18 @@ const nextConfig = {
             key: "X-Frame-Options",
             value: "DENY",
           },
-
-          // MIME type sniffing'i engeller
           {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
-
-          // Referrer bilgisi kontrolü
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
-
-          // Eski browser'larda XSS koruması
           {
             key: "X-XSS-Protection",
             value: "1; mode=block",
           },
-
-          // Ana güvenlik politikası
           {
             key: "Content-Security-Policy",
             value: [
@@ -221,8 +233,6 @@ const nextConfig = {
               "upgrade-insecure-requests",
             ].join("; "),
           },
-
-          // HTTPS zorunluluğu (Production'da aktif olacak)
           ...(process.env.NODE_ENV === "production"
             ? [
                 {
@@ -231,8 +241,6 @@ const nextConfig = {
                 },
               ]
             : []),
-
-          // Browser API'larına erişimi kısıtla
           {
             key: "Permissions-Policy",
             value: [
@@ -247,17 +255,14 @@ const nextConfig = {
               "magnetometer=()",
             ].join(", "),
           },
-
           {
             key: "Cross-Origin-Embedder-Policy",
             value: "unsafe-none",
           },
-
           {
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin",
           },
-
           {
             key: "Cross-Origin-Resource-Policy",
             value: "cross-origin",
@@ -265,46 +270,80 @@ const nextConfig = {
         ],
       },
 
-      // ✅ DASHBOARD VE DATABASE İÇERİKLERİ İÇİN CACHE DEVRE DIŞI
+      // ✅ GÜÇLENDİRİLMİŞ CACHE KONTROLÜ
       {
         source: "/dashboard/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, max-age=0",
+            value:
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
           },
         ],
       },
 
-      // ✅ MENU SAYFASI İÇİN CACHE DEVRE DIŞI
       {
         source: "/menu/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, max-age=0",
+            value:
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
           },
         ],
       },
 
-      // ✅ ANA SAYFA İÇİN CACHE DEVRE DIŞI (eğer kategoriler ana sayfada da görünüyorsa)
       {
         source: "/",
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, max-age=0",
+            value:
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
           },
         ],
       },
 
-      // API routes için özel header'lar
+      // ✅ API ROUTES İÇİN GÜÇLENDİRİLMİŞ HEADER'LAR
       {
         source: "/api/(.*)",
         headers: [
           {
             key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, max-age=0", // ✅ Güçlendirildi
+            value:
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
           },
           {
             key: "X-Robots-Tag",
@@ -314,7 +353,7 @@ const nextConfig = {
             key: "Access-Control-Allow-Origin",
             value:
               process.env.NODE_ENV === "production"
-                ? "https://cruffin-001.vercel.app" // ✅ Slash kaldırıldı
+                ? "https://cruffin-001.vercel.app"
                 : "*",
           },
           {
@@ -328,7 +367,6 @@ const nextConfig = {
         ],
       },
 
-      // ✅ STATIC DOSYALAR İÇİN AYARLAR DÜZELTİLDİ
       {
         source: "/_next/static/(.*)",
         headers: [
@@ -336,8 +374,8 @@ const nextConfig = {
             key: "Cache-Control",
             value:
               process.env.NODE_ENV === "production"
-                ? "public, max-age=31536000, immutable" // Production'da cache'le
-                : "no-store, no-cache, must-revalidate", // Development'ta cache'leme
+                ? "public, max-age=31536000, immutable"
+                : "no-store, no-cache, must-revalidate",
           },
         ],
       },
