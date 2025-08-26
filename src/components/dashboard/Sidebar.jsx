@@ -119,12 +119,18 @@ export default function DashboardSidebar({
         isOpen ? "w-64" : "w-20"
       )}
     >
-      <div className="p-2 font-bold text-xl text-center justify-center pt-4">
-        {isOpen ? "buyuk" : "kucuk"}
-      </div>
+      {isOpen ? (
+        <h1 className="text-4xl p-2 text-center tracking-wide font-family-marcellus text-amber-700 dark:text-white">
+          Cruffin
+        </h1>
+      ) : (
+        <h1 className="text-xl p-2 text-center font-family-marcellus tracking-wide text-amber-700 dark:text-white">
+          Cruffin
+        </h1>
+      )}
 
       <motion.ul
-        className="space-y-1 mt-4 overflow-hidden"
+        className="space-y-1 mt-2 overflow-hidden "
         variants={containerVariants}
         initial="hidden"
         animate="show"

@@ -48,6 +48,8 @@ const MenuProducts = ({ products, activeCategory }) => {
                   width={100}
                   height={100}
                   className="rounded-md object-cover md:w-40 md:h-40 w-32 h-32"
+                  onContextMenu={(e) => e.preventDefault()}
+                  draggable={false}
                 />
               </div>
 

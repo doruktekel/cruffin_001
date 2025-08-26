@@ -273,7 +273,7 @@ export default function RegisterPage() {
       </AlertDialog>
 
       <div className="flex justify-center items-center">
-        <h1 className="text-6xl text-center font-family-marcellus text-amber-700">
+        <h1 className="text-6xl text-center font-family-marcellus tracking-wide  text-amber-700">
           Cruffin
         </h1>
       </div>

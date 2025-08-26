@@ -45,7 +45,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col gap-10 items-center justify-center">
       <div className="flex justify-center items-center">
-        <h1 className="text-6xl text-center font-family-marcellus text-amber-700">
+        <h1 className="text-6xl text-center font-family-marcellus tracking-wide  text-amber-700">
           Cruffin
         </h1>
       </div>
