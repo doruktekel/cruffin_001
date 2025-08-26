@@ -16,9 +16,9 @@ export const POST = async (req) => {
       );
     }
 
-    if (password.length < 6) {
+    if (password.length < 8) {
       return NextResponse.json(
-        { error: "Password en az 6 karakter olmalı !" },
+        { error: "Password en az 8 karakter olmalı !" },
         { status: 400 }
       );
     }

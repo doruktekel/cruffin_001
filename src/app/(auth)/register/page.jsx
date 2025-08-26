@@ -59,10 +59,21 @@ export default function RegisterPage() {
     setTouchedFields((prev) => ({ ...prev, [fieldName]: true }));
   };
 
+  // ✅ FIXED: Email validation with proper error clearing
   const handleEmailChange = (e) => {
     const emailValue = e.target.value;
     setFormData((prev) => ({ ...prev, email: emailValue }));
 
+    // ✅ Clear error if email is empty
+    if (!emailValue.trim()) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: null,
+      }));
+      return;
+    }
+
+    // ✅ Validate if field has been touched or has value
     if (touchedFields.email || emailValue) {
       try {
         const emailValidation = validateEmail(emailValue);
@@ -80,15 +91,32 @@ export default function RegisterPage() {
     }
   };
 
-  // 1. ✅ handlePasswordChange fonksiyonunuzu şöyle güncelleyin:
+  // ✅ FIXED: Password validation with proper error clearing
   const handlePasswordChange = (e) => {
     const passwordValue = e.target.value;
     setFormData((prev) => ({ ...prev, password: passwordValue }));
 
+    // ✅ Clear error if password is empty
+    if (!passwordValue.trim()) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        password: null,
+      }));
+
+      // Also clear confirmPassword error if it exists
+      if (formData.confirmPassword && !formData.confirmPassword) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          confirmPassword: null,
+        }));
+      }
+      return;
+    }
+
+    // ✅ Validate if field has been touched or has value
     if (touchedFields.password || passwordValue) {
       try {
         const passwordValidation = validatePassword(passwordValue);
-
         setFieldErrors((prev) => ({
           ...prev,
           password: passwordValidation.isValid
@@ -104,29 +132,37 @@ export default function RegisterPage() {
       }
     }
 
-    // Confirm password kontrolü
-    if (
-      formData.confirmPassword &&
-      passwordValue !== formData.confirmPassword
-    ) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        confirmPassword: "Şifreler eşleşmiyor!",
-      }));
-    } else if (
-      formData.confirmPassword &&
-      passwordValue === formData.confirmPassword
-    ) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        confirmPassword: null,
-      }));
+    // ✅ Confirm password kontrolü
+    if (formData.confirmPassword) {
+      if (passwordValue !== formData.confirmPassword) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          confirmPassword: "Şifreler eşleşmiyor!",
+        }));
+      } else {
+        setFieldErrors((prev) => ({
+          ...prev,
+          confirmPassword: null,
+        }));
+      }
     }
   };
+
+  // ✅ FIXED: Confirm password validation with proper error clearing
   const handleConfirmPasswordChange = (e) => {
     const confirmPasswordValue = e.target.value;
     setFormData((prev) => ({ ...prev, confirmPassword: confirmPasswordValue }));
 
+    // ✅ Clear error if confirmPassword is empty
+    if (!confirmPasswordValue.trim()) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: null,
+      }));
+      return;
+    }
+
+    // ✅ Validate if field has been touched or has value
     if (touchedFields.confirmPassword || confirmPasswordValue) {
       if (confirmPasswordValue !== formData.password) {
         setFieldErrors((prev) => ({
@@ -140,6 +176,25 @@ export default function RegisterPage() {
         }));
       }
     }
+  };
+
+  // ✅ Helper functions for validation states
+  const getEmailValidationState = () => {
+    if (!formData.email) return "neutral";
+    if (fieldErrors.email) return "error";
+    return "success";
+  };
+
+  const getPasswordValidationState = () => {
+    if (!formData.password) return "neutral";
+    if (fieldErrors.password) return "error";
+    return "success";
+  };
+
+  const getConfirmPasswordValidationState = () => {
+    if (!formData.confirmPassword) return "neutral";
+    if (fieldErrors.confirmPassword) return "error";
+    return "success";
   };
 
   const handleSubmit = async (e) => {
@@ -194,7 +249,7 @@ export default function RegisterPage() {
       email: dataToSend.email,
       password: dataToSend.password,
       honeypot: honeypotData.middleName,
-      website: honeypotData.profileUrl, // ✅ Düzeltme: profile_url -> profileUrl
+      website: honeypotData.profileUrl,
       router,
     });
   };
@@ -273,7 +328,7 @@ export default function RegisterPage() {
       </AlertDialog>
 
       <div className="flex justify-center items-center">
-        <h1 className="text-6xl text-center font-family-marcellus tracking-wide  text-amber-700">
+        <h1 className="text-6xl text-center font-family-marcellus tracking-wide text-amber-700">
           Cruffin
         </h1>
       </div>
@@ -297,7 +352,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {/* Email Input */}
+        {/* ✅ FIXED: Email Input with proper validation styling */}
         <div className="relative">
           <Input
             name="email"
@@ -308,23 +363,31 @@ export default function RegisterPage() {
             onBlur={() => handleFieldTouch("email")}
             required
             autoComplete="email"
-            className={`w-full p-4 border rounded ${
-              fieldErrors.email
-                ? "border-red-500 focus:border-red-500"
+            className={`w-full p-4 border rounded pr-12 ${
+              getEmailValidationState() === "error"
+                ? "border-red-300 focus:border-red-500"
+                : getEmailValidationState() === "success"
+                ? "border-green-300 focus:border-green-500"
                 : "focus:border-blue-500"
             }`}
           />
           <Mail
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+              getEmailValidationState() === "error"
+                ? "text-red-400"
+                : getEmailValidationState() === "success"
+                ? "text-green-400"
+                : "text-gray-400"
+            }`}
             size={20}
           />
         </div>
-        {/* ✅ Email Error Display - String format */}
+        {/* ✅ Email Error Display */}
         {fieldErrors.email && (
           <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
         )}
 
-        {/* Password Input */}
+        {/* ✅ FIXED: Password Input with proper validation styling */}
         <div className="relative">
           <Input
             name="password"
@@ -342,21 +405,29 @@ export default function RegisterPage() {
             onDrop={(e) => e.preventDefault()}
             onSelect={(e) => e.preventDefault()}
             className={`w-full p-4 pr-12 border rounded ${
-              fieldErrors.password
-                ? "border-red-500 focus:border-red-500"
+              getPasswordValidationState() === "error"
+                ? "border-red-300 focus:border-red-500"
+                : getPasswordValidationState() === "success"
+                ? "border-green-300 focus:border-green-500"
                 : "focus:border-blue-500"
             }`}
           />
           <button
             type="button"
             onClick={() => setShowPass((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+            className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70 ${
+              getPasswordValidationState() === "error"
+                ? "text-red-400"
+                : getPasswordValidationState() === "success"
+                ? "text-green-400"
+                : "text-gray-400"
+            }`}
           >
             {showPass ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
 
-        {/* ✅ Password Error Display - Array format için optimize edilmiş */}
+        {/* ✅ Password Error Display */}
         {fieldErrors.password && (
           <div className="mt-2 space-y-1">
             {Array.isArray(fieldErrors.password) ? (
@@ -371,7 +442,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {/* Confirm Password Input */}
+        {/* ✅ FIXED: Confirm Password Input with proper validation styling */}
         <div className="relative">
           <Input
             name="confirmPassword"
@@ -389,20 +460,28 @@ export default function RegisterPage() {
             onDrop={(e) => e.preventDefault()}
             onSelect={(e) => e.preventDefault()}
             className={`w-full p-4 pr-12 border rounded ${
-              fieldErrors.confirmPassword
-                ? "border-red-500 focus:border-red-500"
+              getConfirmPasswordValidationState() === "error"
+                ? "border-red-300 focus:border-red-500"
+                : getConfirmPasswordValidationState() === "success"
+                ? "border-green-300 focus:border-green-500"
                 : "focus:border-blue-500"
             }`}
           />
           <button
             type="button"
             onClick={() => setShowSecondPass((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+            className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:opacity-70 ${
+              getConfirmPasswordValidationState() === "error"
+                ? "text-red-400"
+                : getConfirmPasswordValidationState() === "success"
+                ? "text-green-400"
+                : "text-gray-400"
+            }`}
           >
             {showSecondPass ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
-        {/* ✅ Confirm Password Error Display - String format */}
+        {/* ✅ Confirm Password Error Display */}
         {fieldErrors.confirmPassword && (
           <p className="text-red-500 text-sm mt-1">
             {fieldErrors.confirmPassword}
