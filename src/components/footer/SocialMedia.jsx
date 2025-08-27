@@ -35,7 +35,7 @@ const SocialMedia = ({ socialMedias }) => {
   };
 
   return (
-    <div className="flex justify-center items-center gap-8 text-lg font-family-marcellus">
+    <div className="flex flex-wrap justify-center items-center gap-8 text-lg font-family-marcellus">
       {socials &&
         socials.map((item) => {
           const IconComponent = iconMap[item.platform.toLowerCase()];

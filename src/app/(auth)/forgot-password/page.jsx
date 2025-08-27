@@ -38,9 +38,6 @@ export default function ForgotPasswordPage() {
     } else {
       setEmailError("");
     }
-
-    // API mesajlarını temizle
-    clearMessages();
   }, [email]);
 
   const handleSubmit = async (e) => {

@@ -8,7 +8,7 @@ import FooterWrapper from "@/components/footer/FooterWrapper";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full max-w-full">
       <Header />
       <Tent />
       <MenuPage />
