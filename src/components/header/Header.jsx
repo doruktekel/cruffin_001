@@ -1,4 +1,3 @@
-import React from "react";
 import Navbars from "./Navbars";
 
 const Header = () => {
@@ -25,22 +24,22 @@ const Header = () => {
         <Navbars />
       </div>
 
-      <div className="absolute z-10 top-100 transform right-1/2  -translate-x-[120%] flex items-center gap-4 ">
-        <p className="font-family-shadows text-3xl text-white opacity-80 ">
+      <div className="absolute z-10 top-120 transform right-1/2  -translate-x-[120%] flex items-center gap-4 ">
+        <p className="font-family-shadows text-xl text-white opacity-80 ">
           Çıtır Kruvasan
         </p>
         <div className=" h-[0.1px] w-44 bg-slate-300 "></div>
       </div>
       <div className="absolute z-10 bottom-70 transform right-1/2  -translate-x-[172%] flex items-center gap-4 ">
-        <p className="font-family-shadows text-3xl text-white opacity-80 ">
+        <p className="font-family-shadows text-xl text-white opacity-80 ">
           Taze Meyveler
         </p>
         <div className=" h-[0.1px] w-24 bg-slate-300 "></div>
       </div>
 
-      <div className="absolute z-10 top-80 left-1/2 transform translate-x-[84%] flex items-center gap-4 ">
+      <div className="absolute z-10 top-60 left-1/2 transform translate-x-[84%] flex items-center gap-4 ">
         <div className=" h-[0.1px] w-36 bg-slate-300 "></div>
-        <p className="font-family-shadows text-3xl text-white opacity-80 ">
+        <p className="font-family-shadows text-xl text-white opacity-80 ">
           Eşsiz Belçika Çukalatası
         </p>
       </div>
