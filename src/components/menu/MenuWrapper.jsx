@@ -51,14 +51,14 @@ const MenuWrapper = ({ categories, products }) => {
         />
       </div>
       <MenuHeader />
-      <div className="w-full h-[0.5px]  bg-amber-700  my-2"></div>
+      <div className="w-full h-[0.5px]  bg-amber-700  my-1"></div>
       <MenuCategory
         categories={categories}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
 
-      <div className="w-full h-[0.5px] bg-amber-700 my-2"></div>
+      <div className="w-full h-[0.5px] bg-amber-700 my-1"></div>
       <MenuProducts
         products={products.filter(
           (p) => p.category === activeCategory // örnek filtreleme

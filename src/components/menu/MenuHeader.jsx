@@ -20,7 +20,7 @@ const MenuHeader = () => {
           <Image src="/kurucuk.png" width={100} height={100} alt="kurucuk" />
         </motion.div>
         <div className="flex flex-col items-center">
-          <h1 className="text-3xl lg:text-4xl font-family-playfair font-bold text-amber-700  ">
+          <h1 className="text-2xl lg:text-3xl font-family-playfair font-bold text-amber-700  ">
             Menü
           </h1>
           <div className="w-full justify-between items-center gap-5"></div>
