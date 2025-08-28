@@ -50,13 +50,13 @@ const MenuCategory = ({ categories, activeCategory, setActiveCategory }) => {
               key={category._id}
               onClick={() => setActiveCategory(category._id)}
               variant="ghost"
-              className={`text-base lg:text-xl whitespace-nowrap font-bold font-family-playfair md:px-4 px-2 md:py-2 py-1 border-b-2 transition-all duration-300 cursor-pointer capitalize flex-shrink-0 ${
+              className={`text-base lg:text-xl whitespace-nowrap font-bold font-family-playfair md:px-4 px-2 md:py-2 py-1 border-b-2 transition-all duration-300 cursor-pointer capitalize flex-shrink-0  ${
                 isActiveCategory(category)
                   ? "border-amber-700 text-amber-700 bg-amber-50 shadow-sm"
                   : "border-transparent text-gray-600 hover:text-amber-700 hover:bg-amber-25 hover:border-amber-300"
               }`}
             >
-              {category.name}
+              {category.name.toLowerCase()}
             </Button>
           ))}
         </div>

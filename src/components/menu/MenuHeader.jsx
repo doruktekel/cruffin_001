@@ -5,7 +5,7 @@ import React from "react";
 import { motion } from "framer-motion";
 const MenuHeader = () => {
   return (
-    <div className=" max-w-7xl mx-auto flex flex-col gap-8">
+    <div className="max-w-7xl mx-auto flex flex-col gap-8">
       <div className="flex justify-between items-center">
         <motion.div
           initial={{ x: -20, y: -20 }}
@@ -19,8 +19,8 @@ const MenuHeader = () => {
         >
           <Image src="/kurucuk.png" width={100} height={100} alt="kurucuk" />
         </motion.div>
-        <div className="flex flex-col items-center">
-          <h1 className="text-2xl lg:text-3xl font-family-playfair font-bold text-amber-700  ">
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="text-2xl lg:text-3xl text-center font-family-playfair font-bold text-amber-700  ">
             Menü
           </h1>
           <div className="w-full justify-between items-center gap-5"></div>
