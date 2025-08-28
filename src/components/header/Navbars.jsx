@@ -18,7 +18,7 @@ const Navbars = () => {
         <li>
           <Link
             href="#menu"
-            className="relative group text-lg md:text-2xl font-family-playfair"
+            className="relative group text-lg md:text-xl font-family-playfair"
           >
             Menü
             <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-amber-700 group-hover:w-full transition-all duration-300 ease-in-out"></span>
@@ -28,7 +28,7 @@ const Navbars = () => {
         <li>
           <Link
             href="#info"
-            className="relative group text-lg md:text-2xl font-family-playfair"
+            className="relative group text-lg md:text-xl font-family-playfair"
           >
             Hakkımızda
             <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-amber-700 group-hover:w-full transition-all duration-300 ease-in-out"></span>
@@ -38,7 +38,7 @@ const Navbars = () => {
         <li>
           <Link
             href="#gallery"
-            className="relative group text-lg md:text-2xl font-family-playfair"
+            className="relative group text-lg md:text-xl font-family-playfair"
           >
             Galeri
             <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-amber-700 group-hover:w-full transition-all duration-300 ease-in-out"></span>
@@ -48,7 +48,7 @@ const Navbars = () => {
         <li>
           <Link
             href={"#contact"}
-            className="relative group text-lg md:text-2xl font-family-playfair"
+            className="relative group text-lg md:text-xl font-family-playfair"
           >
             Iletişim
             <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-amber-700 group-hover:w-full transition-all duration-300 ease-in-out"></span>
