@@ -27,7 +27,7 @@ const MenuProducts = ({ products, activeCategory }) => {
   return (
     <motion.div
       key={activeCategory}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto mt-10"
+      className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-7xl mx-auto mt-5"
       variants={containerVariants}
       initial="hidden"
       animate="show"
@@ -37,7 +37,7 @@ const MenuProducts = ({ products, activeCategory }) => {
           product.isAvailable && (
             <motion.div
               key={product._id}
-              className="grid md:grid-cols-4 grid-cols-3 gap-2 md:gap-4 border md:p-2 p-1 md:rounded-xl rounded-md shadow hover:shadow-md transition"
+              className="grid md:grid-cols-4 grid-cols-3 gap-2 md:gap-2 border md:p-2 p-1 md:rounded-xl rounded-md shadow hover:shadow-md transition"
               variants={itemVariants}
             >
               {/* Görsel */}

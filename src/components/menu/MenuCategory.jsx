@@ -31,10 +31,7 @@ const MenuCategory = ({ categories, activeCategory, setActiveCategory }) => {
     <div className="max-w-4xl mx-auto flex flex-col">
       <div className="flex items-center gap-1 md:gap-2">
         {/* Sol ok - sadece desktop'ta göster */}
-        <button
-          onClick={scrollLeft}
-          className="hidden md:block md:p-1 cursor-pointer"
-        >
+        <button onClick={scrollLeft} className="md:p-1 cursor-pointer">
           <ChevronLeft className="md:w-12 md:h-12 w-10 h-10 text-amber-700" />
         </button>
 
@@ -65,10 +62,7 @@ const MenuCategory = ({ categories, activeCategory, setActiveCategory }) => {
         </div>
 
         {/* Sağ ok - sadece desktop'ta göster */}
-        <button
-          onClick={scrollRight}
-          className="hidden md:block md:p-1 cursor-pointer"
-        >
+        <button onClick={scrollRight} className="md:p-1 cursor-pointer">
           <ChevronRight className="md:w-12 md:h-12 w-10 h-10 text-amber-700" />
         </button>
       </div>
