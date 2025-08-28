@@ -30,7 +30,7 @@ const Header = () => {
         </p>
         <div className=" h-[0.1px] w-44 bg-slate-300 "></div>
       </div>
-      <div className="absolute z-10 top-[700px] transform right-1/2  -translate-x-[172%] flex items-center gap-4 ">
+      <div className="absolute z-10 top-[500px] transform right-1/2  -translate-x-[172%] flex items-center gap-4 ">
         <p className="font-family-shadows text-2xl text-white opacity-80 ">
           Taze Meyveler
         </p>
