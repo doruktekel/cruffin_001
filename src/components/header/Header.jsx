@@ -24,13 +24,13 @@ const Header = () => {
         <Navbars />
       </div>
 
-      <div className="absolute z-10 top-120 transform right-1/2  -translate-x-[120%] flex items-center gap-4 ">
+      <div className="absolute z-10 top-72 transform right-1/2  -translate-x-[120%] flex items-center gap-4 ">
         <p className="font-family-shadows text-xl text-white opacity-80 ">
           Çıtır Kruvasan
         </p>
         <div className=" h-[0.1px] w-44 bg-slate-300 "></div>
       </div>
-      <div className="absolute z-10 bottom-70 transform right-1/2  -translate-x-[172%] flex items-center gap-4 ">
+      <div className="absolute z-10 top-96 transform right-1/2  -translate-x-[172%] flex items-center gap-4 ">
         <p className="font-family-shadows text-xl text-white opacity-80 ">
           Taze Meyveler
         </p>
