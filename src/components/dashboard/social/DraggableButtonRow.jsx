@@ -74,7 +74,7 @@ const DraggableButtonRow = ({
         <Input
           ref={inputRef}
           type="text"
-          className="p-2 border rounded-md sm:w-[300px] md:w-[500px] lg:w-[800px] xl:w-[1000px] bg-white dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:placeholder:text-gray-400"
+          className="p-2 border rounded-md sm:w-[250px] md:w-[400px] lg:w-[700px] xl:w-[800px] bg-white dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:placeholder:text-gray-400"
           placeholder={`Lütfen ${label} linkini giriniz...`}
           value={link || ""}
           onChange={onChange}
