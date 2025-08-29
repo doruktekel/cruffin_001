@@ -56,11 +56,11 @@ const DraggableButtonRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center justify-between gap-4 p-2 mb-2 bg-gray-100 dark:bg-gray-900 rounded-lg relative flex-wrap"
+      className="flex items-center justify-between gap-2 p-2 mb-2 bg-gray-100 dark:bg-gray-900 rounded-lg relative flex-wrap"
     >
       {/* Sol: draggable alan (değişken genişlik) */}
       <div
-        className="flex items-center gap-2 shrink-0 max-w-full cursor-grab active:cursor-grabbing"
+        className="flex items-center gap-1 shrink-0 max-w-full cursor-grab active:cursor-grabbing"
         {...attributes}
         {...listeners}
       >

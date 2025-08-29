@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }) {
             toggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
             toggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
           />
-          <main className="p-4 overflow-auto md:mb-16 mb-12">{children}</main>
+          <main className="p-4 overflow-auto md:mb-12 mb-10">{children}</main>
         </div>
       </div>
 
