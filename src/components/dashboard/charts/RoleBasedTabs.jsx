@@ -43,7 +43,7 @@ const RoleBasedTabs = ({ children, defaultValue = "categories" }) => {
           >
             <Users className="h-4 w-4" />
             <span className="hidden sm:inline">Kullanıcılar</span>
-            <span className="sm:hidden">User</span>
+            <span className="sm:hidden">Kull.</span>
           </TabsTrigger>
         )}
       </TabsList>
