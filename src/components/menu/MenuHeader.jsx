@@ -17,13 +17,12 @@ const MenuHeader = () => {
             ease: "easeInOut",
           }}
         >
-          <Image src="/kurucuk.png" width={80} height={80} alt="kurucuk" />
+          <Image src="/kurucuk.png" width={60} height={80} alt="kurucuk" />
         </motion.div>
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-2xl lg:text-3xl text-center font-family-playfair font-bold text-amber-700  ">
+          <h1 className="text-xl md:text-2xl text-center font-family-playfair font-bold text-amber-700  ">
             Menü
           </h1>
-          <div className="w-full justify-between items-center gap-5"></div>
         </div>
         <motion.div
           animate={{ rotate: [-30, 0, -30] }} // sürekli -30° ↔ 0° arasında dönme

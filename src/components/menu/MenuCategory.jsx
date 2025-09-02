@@ -75,7 +75,7 @@ const MenuCategory = ({ categories, activeCategory, setActiveCategory }) => {
       </div>
 
       {/* Mobil için kaydırma ipucu - isteğe bağlı */}
-      <div className="text-center flex justify-center items-center gap-5">
+      <div className="text-center flex justify-center items-center mt-1 md:mt-2 gap-2 md:gap-5">
         <div className="p-1 rounded-full bg-green-50 hover:bg-green-100 transition-colors flex items-center gap-1">
           <Sprout className="text-green-600" size={20} />
           <p className="text-xs">Vegan</p>
