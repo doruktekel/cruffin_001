@@ -317,9 +317,13 @@ export default function RegisterPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleCancelLastAttempt}>
+            <AlertDialogCancel
+              onClick={handleCancelLastAttempt}
+              className="cursor-pointer"
+            >
               İptal
             </AlertDialogCancel>
+            className="cursor-pointer"
             <AlertDialogAction onClick={handleConfirmLastAttempt}>
               Devam Et
             </AlertDialogAction>
