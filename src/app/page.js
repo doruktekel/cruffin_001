@@ -32,7 +32,7 @@ export default function Home() {
       <InfoWrapper />
 
       <Image
-        src="/bg_patis.png"
+        src="/bg_patis.webp"
         width={1920}
         height={300}
         className="w-full h-[300px] object-cover mt-20 md:mt-32"

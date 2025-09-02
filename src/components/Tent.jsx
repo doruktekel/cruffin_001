@@ -4,10 +4,10 @@ import React from "react";
 const Tent = () => {
   return (
     <div className="sticky top-0 w-full z-1">
-      {/* <img src="/yen6.png" alt="tente" className="w-full h-40 object-cover" /> */}
+      {/* <img src="/yen6.webp" alt="tente" className="w-full h-40 object-cover" /> */}
 
       <Image
-        src="/yen6.png"
+        src="/yen6.webp"
         alt="tente"
         width={1920}
         height={1080}
@@ -16,7 +16,7 @@ const Tent = () => {
         loading="eager"
         quality={100}
         // placeholder="blur"
-        // blurDataURL="/yen6.png"
+        // blurDataURL="/yen6.webp"
         // unoptimized
         sizes="100vw"
         // style={{

@@ -13,7 +13,7 @@ const MenuWrapper = ({ categories, products }) => {
     <section className="relative w-full p-1 md:px-5 scroll-mt-28" id="menu">
       <div className="absolute top-100 left-10 w-60 opacity-10 -z-10 pointer-events-none">
         <Image
-          src="/kurucilek.png"
+          src="/kurucilek.webp"
           alt="parallax1"
           width={280}
           height={280}
@@ -23,7 +23,7 @@ const MenuWrapper = ({ categories, products }) => {
 
       <div className="absolute top-140 right-0 w-72 opacity-10 -z-10 pointer-events-none">
         <Image
-          src="/kurucuk.png"
+          src="/kurucuk.webp"
           alt="parallax2"
           width={300}
           height={300}
@@ -33,7 +33,7 @@ const MenuWrapper = ({ categories, products }) => {
 
       <div className="absolute bottom-120 left-28 w-64 opacity-10 -z-10 pointer-events-none">
         <Image
-          src="/kurucuk.png"
+          src="/cof.webp"
           alt="parallax3"
           width={260}
           height={260}
@@ -43,7 +43,7 @@ const MenuWrapper = ({ categories, products }) => {
 
       <div className="absolute bottom-60 right-40 w-52 opacity-10 -z-10 pointer-events-none">
         <Image
-          src="/kurucilek.png"
+          src="/kurucilek.webp"
           alt="parallax4"
           width={260}
           height={260}

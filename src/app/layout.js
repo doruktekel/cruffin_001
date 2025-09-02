@@ -1,47 +1,3 @@
-// import {
-//   Marcellus,
-//   Nunito,
-//   Shadows_Into_Light,
-//   Playfair_Display,
-// } from "next/font/google";
-// import "./globals.css";
-
-// const marcellus = Marcellus({
-//   weight: ["400"],
-//   subsets: ["latin"],
-//   variable: "--font-marcellus",
-// });
-
-// const nunito = Nunito({
-//   weight: ["200", "400", "600", "800"],
-//   subsets: ["latin"],
-//   variable: "--font-nunito",
-// });
-
-// const shadowsIntoLight = Shadows_Into_Light({
-//   weight: ["400"],
-//   subsets: ["latin"],
-//   variable: "--font-shadows",
-// });
-
-// const playfairDisplay = Playfair_Display({
-//   weight: ["400", "500", "600", "700", "800", "900"],
-//   subsets: ["latin"],
-//   variable: "--font-playfair",
-// });
-
-// export default function RootLayout({ children }) {
-//   return (
-//     <html
-//       lang="en"
-//       className={`${marcellus.variable} ${nunito.variable} ${shadowsIntoLight.variable} ${playfairDisplay.variable}  `}
-//       suppressHydrationWarning
-//     >
-//       <body className="antialiased">{children}</body>
-//     </html>
-//   );
-// }
-
 import {
   Marcellus,
   Nunito,
@@ -85,6 +41,12 @@ export const metadata = {
   viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
 
+  // icons: {
+  //   icon: "/favicon16.png",
+  //   shortcut: "/favicon16.png",
+  //   apple: "/apple-touch-icon.png", // Eğer varsa
+  // },
+
   // Open Graph (Social Media)
   openGraph: {
     title: "Cruffin Bakery - Premium Lezzetler ve Özel Menü",
@@ -114,7 +76,10 @@ export default function RootLayout({ children }) {
     >
       <head>
         {/* Additional meta tags if needed */}
-        <link rel="icon" href="/favicon.ico" />
+
+        <link rel="icon" href="/favicon16.png" sizes="16x16" />
+        <link rel="icon" href="/favicon32.png" sizes="32x32" />
+
         <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="antialiased">{children}</body>

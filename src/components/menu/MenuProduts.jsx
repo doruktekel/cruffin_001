@@ -60,7 +60,7 @@ const MenuProducts = ({ products, activeCategory }) => {
           {/* Görsel */}
           <div className="col-span-1">
             <Image
-              src={product.image ? product.image : "/bg_patis.png"}
+              src={product.image ? product.image : "/noimage.webp"}
               alt={product.name}
               width={100}
               height={100}
@@ -73,10 +73,10 @@ const MenuProducts = ({ products, activeCategory }) => {
           {/* Bilgiler */}
           <div className="md:col-span-3 col-span-2 flex flex-col">
             <div className="flex justify-between items-center">
-              <h3 className="lg:text-lg font-semibold font-family-marcellus capitalize">
+              <h3 className="md:text-lg font-semibold font-family-marcellus capitalize">
                 {product.name.toLocaleLowerCase()}
               </h3>
-              <span className="text-amber-700 lg:text-lg font-extrabold">
+              <span className="text-amber-700 text-sm md:text-lg font-extrabold min-w-5">
                 {product.price === 0 ? "" : product.price + " " + "₺"}
               </span>
             </div>

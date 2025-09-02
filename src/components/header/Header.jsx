@@ -45,7 +45,7 @@ const Header = () => {
       </div>
 
       <div className="absolute z-10 top-[90vh] left-1/2 transform -translate-x-1/2 flex flex-col justify-center items-center gap-2 ">
-        <img src="/scroll.gif" alt="Animasyon" className="w-14" />
+        <img src="/scroll.gif" alt="Animasyon" className="w-10 md:w-14" />
       </div>
     </section>
   );

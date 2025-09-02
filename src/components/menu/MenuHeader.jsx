@@ -17,7 +17,7 @@ const MenuHeader = () => {
             ease: "easeInOut",
           }}
         >
-          <Image src="/kurucuk.png" width={60} height={80} alt="kurucuk" />
+          <Image src="/kurucuk.webp" width={60} height={80} alt="kurucuk" />
         </motion.div>
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-xl md:text-2xl text-center font-family-playfair font-bold text-amber-700  ">
@@ -34,7 +34,7 @@ const MenuHeader = () => {
           }}
           style={{ originX: 0.5, originY: 0.5 }}
         >
-          <Image src="/cofmac.png" width={40} height={80} alt="cofmac" />
+          <Image src="/cofmac.webp" width={40} height={80} alt="cofmac" />
         </motion.div>{" "}
       </div>
     </div>
