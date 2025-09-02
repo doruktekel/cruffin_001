@@ -35,7 +35,7 @@ const MenuCategory = ({ categories, activeCategory, setActiveCategory }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto flex flex-col">
+    <div className="md:max-w-5xl md:mx-auto w-full flex flex-col">
       <div className="flex items-center gap-1 md:gap-2">
         {/* Sol ok - sadece desktop'ta göster */}
         <button onClick={scrollLeft} className="md:p-1 cursor-pointer">

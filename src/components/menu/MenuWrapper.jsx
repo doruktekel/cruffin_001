@@ -10,7 +10,7 @@ const MenuWrapper = ({ categories, products }) => {
   const [activeCategory, setActiveCategory] = useState(categories[0]._id);
 
   return (
-    <section className="relative w-full p-2 md:px-5 scroll-mt-32" id="menu">
+    <section className="relative w-full p-1 md:px-5 scroll-mt-28" id="menu">
       <div className="absolute top-100 left-10 w-60 opacity-10 -z-10 pointer-events-none">
         <Image
           src="/kurucilek.png"

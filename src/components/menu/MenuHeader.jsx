@@ -8,8 +8,8 @@ const MenuHeader = () => {
     <div className="max-w-7xl mx-auto flex flex-col">
       <div className="flex justify-between items-center">
         <motion.div
-          initial={{ x: -20, y: -20 }}
-          animate={{ x: 20, y: 20 }}
+          initial={{ x: -15, y: -15 }}
+          animate={{ x: 15, y: 15 }}
           transition={{
             repeat: Infinity,
             repeatType: "reverse",
