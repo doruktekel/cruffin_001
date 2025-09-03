@@ -59,6 +59,14 @@ const SocialButtons = ({ newSocials }) => {
     vimeo: "",
     spotify: "",
   });
+
+  // İlk yükleme durumunu takip etmek için
+  const [initialState, setInitialState] = useState({
+    activeButtons: [],
+    socialLinks: {},
+    isLoaded: false,
+  });
+
   const [deleteDialog, setDeleteDialog] = useState({
     isOpen: false,
     buttonKey: null,
@@ -134,6 +142,35 @@ const SocialButtons = ({ newSocials }) => {
   // Drag & Drop için sensorları ayarlıyoruz
   const sensors = useSensors(useSensor(PointerSensor));
 
+  // Değişiklik kontrolü fonksiyonu
+  const hasChanges = () => {
+    if (!initialState.isLoaded) return false;
+
+    // Aktif butonlar karşılaştırması
+    if (activeButtons.length !== initialState.activeButtons.length) return true;
+
+    const sortedCurrent = [...activeButtons].sort();
+    const sortedInitial = [...initialState.activeButtons].sort();
+
+    if (JSON.stringify(sortedCurrent) !== JSON.stringify(sortedInitial))
+      return true;
+
+    // Sosyal linkler karşılaştırması (sadece aktif butonlar için)
+    for (const key of activeButtons) {
+      if (socialLinks[key] !== initialState.socialLinks[key]) return true;
+    }
+
+    // Sıralama değişikliği kontrolü
+    for (let i = 0; i < activeButtons.length; i++) {
+      if (activeButtons[i] !== initialState.activeButtons[i]) return true;
+    }
+
+    // Silme işlemi kontrolü
+    if (deletedButtons.length > 0) return true;
+
+    return false;
+  };
+
   // Drag işlemi bittiğinde sırayı güncelleme
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -146,72 +183,89 @@ const SocialButtons = ({ newSocials }) => {
     setActiveButtons(newOrder);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    // 2 saniye içinde tekrar submit'i engelle
-    const now = Date.now();
-    if (now - lastSubmitTime < 2000) {
-      return;
-    }
-    setLastSubmitTime(now);
+  //   // 2 saniye içinde tekrar submit'i engelle
+  //   const now = Date.now();
+  //   if (now - lastSubmitTime < 2000) {
+  //     return;
+  //   }
+  //   setLastSubmitTime(now);
 
-    const emptyPlatform = activeButtons.find(
-      (key) => !socialLinks[key] || socialLinks[key].trim() === ""
-    );
+  //   // Değişiklik kontrolü
+  //   if (!hasChanges()) {
+  //     toast.info("Herhangi bir değişiklik yapılmamıştır.");
+  //     return;
+  //   }
 
-    if (emptyPlatform) {
-      toast.error(`Lütfen ${emptyPlatform} için bir link giriniz.`);
-      return;
-    }
+  //   const emptyPlatform = activeButtons.find(
+  //     (key) => !socialLinks[key] || socialLinks[key].trim() === ""
+  //   );
 
-    const linksToSend = activeButtons.map((key, index) => ({
-      platform: key,
-      url: socialLinks[key],
-      order: index,
-    }));
+  //   if (emptyPlatform) {
+  //     const buttonLabel =
+  //       allButtons.find((btn) => btn.key === emptyPlatform)?.label ||
+  //       emptyPlatform;
+  //     toast.error(`Lütfen ${buttonLabel} için bir link giriniz.`);
+  //     return;
+  //   }
 
-    try {
-      const result = await submitLinks(linksToSend);
+  //   const linksToSend = activeButtons.map((key, index) => ({
+  //     platform: key,
+  //     url: socialLinks[key],
+  //     order: index,
+  //   }));
 
-      if (result) {
-        // Başarılı kayıt sonrası tüm state'leri temizle/güncelle
+  //   try {
+  //     const result = await submitLinks(linksToSend);
 
-        // 1. Links state'ini güncel aktif butonlara göre güncelle
-        const updatedLinks = linksToSend.map((link, index) => ({
-          ...link,
-          _id:
-            result.newSocialMedia[index]?._id ||
-            Math.random().toString(36).substr(2, 9),
-          order: index,
-        }));
-        setLinks(updatedLinks);
+  //     if (result) {
+  //       // Başarılı kayıt sonrası tüm state'leri temizle/güncelle
 
-        // 2. SocialLinks state'ini temizle (silinen platformlar için)
-        const cleanedSocialLinks = {};
-        activeButtons.forEach((key) => {
-          cleanedSocialLinks[key] = socialLinks[key];
-        });
+  //       // 1. Links state'ini güncel aktif butonlara göre güncelle
+  //       const updatedLinks = linksToSend.map((link, index) => ({
+  //         ...link,
+  //         _id:
+  //           result.newSocialMedia[index]?._id ||
+  //           Math.random().toString(36).substr(2, 9),
+  //         order: index,
+  //       }));
+  //       setLinks(updatedLinks);
 
-        // Silinen platformların linklerini temizle
-        allButtons.forEach((button) => {
-          if (!activeButtons.includes(button.key)) {
-            cleanedSocialLinks[button.key] = "";
-          }
-        });
+  //       // 2. SocialLinks state'ini temizle (silinen platformlar için)
+  //       const cleanedSocialLinks = {};
+  //       activeButtons.forEach((key) => {
+  //         cleanedSocialLinks[key] = socialLinks[key];
+  //       });
 
-        setSocialLinks(cleanedSocialLinks);
+  //       // Silinen platformların linklerini temizle
+  //       allButtons.forEach((button) => {
+  //         if (!activeButtons.includes(button.key)) {
+  //           cleanedSocialLinks[button.key] = "";
+  //         }
+  //       });
 
-        // 3. Silinen butonları tamamen temizle - EN SONDA YAPILMALI
-        setDeletedButtons([]);
+  //       setSocialLinks(cleanedSocialLinks);
 
-        toast.success("Değişiklikler başarıyla kaydedildi!");
-      }
-    } catch (error) {
-      console.error("Kaydetme hatası:", error);
-      toast.error("Kaydetme sırasında bir hata oluştu.");
-    }
-  };
+  //       // 3. Silinen butonları tamamen temizle - EN SONDA YAPILMALI
+  //       setDeletedButtons([]);
+
+  //       // 4. İlk durumu güncelle - ÇOK ÖNEMLİ!
+  //       setInitialState({
+  //         activeButtons: [...activeButtons],
+  //         socialLinks: { ...cleanedSocialLinks },
+  //         isLoaded: true,
+  //       });
+
+  //       toast.success("Değişiklikler başarıyla kaydedildi!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Kaydetme hatası:", error);
+  //     toast.error("Kaydetme sırasında bir hata oluştu.");
+  //   }
+  // };
+
   const handleActiveButtonClick = (buttonKey) => () => {
     if (activeButtons.includes(buttonKey)) {
       setActiveButtons(activeButtons.filter((key) => key !== buttonKey));
@@ -330,6 +384,103 @@ const SocialButtons = ({ newSocials }) => {
       !deletedButtons.some((deleted) => deleted.key === button.key)
   );
 
+  // handleSubmit fonksiyonunda değişiklik
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // 2 saniye içinde tekrar submit'i engelle
+    const now = Date.now();
+    if (now - lastSubmitTime < 2000) {
+      return;
+    }
+    setLastSubmitTime(now);
+
+    // Değişiklik kontrolü
+    if (!hasChanges()) {
+      toast.info("Herhangi bir değişiklik yapılmamıştır.");
+      return;
+    }
+
+    const emptyPlatform = activeButtons.find(
+      (key) => !socialLinks[key] || socialLinks[key].trim() === ""
+    );
+
+    if (emptyPlatform) {
+      const buttonLabel =
+        allButtons.find((btn) => btn.key === emptyPlatform)?.label ||
+        emptyPlatform;
+      toast.error(`Lütfen ${buttonLabel} için bir link giriniz.`);
+      return;
+    }
+
+    const linksToSend = activeButtons.map((key, index) => ({
+      platform: key,
+      url: socialLinks[key],
+      order: index,
+    }));
+
+    try {
+      const result = await submitLinks(linksToSend);
+
+      if (result) {
+        // Başarılı kayıt sonrası tüm state'leri güncelle
+
+        // 1. Links state'ini güncel aktif butonlara göre güncelle
+        const updatedLinks = linksToSend.map((link, index) => ({
+          ...link,
+          _id:
+            result.newSocialMedia[index]?._id ||
+            Math.random().toString(36).substr(2, 9),
+          order: index,
+        }));
+        setLinks(updatedLinks);
+
+        // 2. SocialLinks state'ini temizle (silinen platformlar için)
+        const cleanedSocialLinks = {};
+        activeButtons.forEach((key) => {
+          cleanedSocialLinks[key] = socialLinks[key];
+        });
+
+        // Silinen platformların linklerini temizle
+        allButtons.forEach((button) => {
+          if (!activeButtons.includes(button.key)) {
+            cleanedSocialLinks[button.key] = "";
+          }
+        });
+
+        setSocialLinks(cleanedSocialLinks);
+
+        // 3. İlk durumu güncelle
+        setInitialState({
+          activeButtons: [...activeButtons],
+          socialLinks: { ...cleanedSocialLinks },
+          isLoaded: true,
+        });
+
+        // 4. Silinen butonları hemen temizle
+        setDeletedButtons([]);
+
+        // toast.success("Değişiklikler başarıyla kaydedildi!");
+      }
+    } catch (error) {
+      console.error("Kaydetme hatası:", error);
+      toast.error("Kaydetme sırasında bir hata oluştu.");
+    }
+  };
+
+  // Ek olarak, başarılı kayıt sonrası deletedButtons'u temizlemek için useEffect ekleyin
+  useEffect(() => {
+    // Eğer başarılı bir kayıt yapıldıysa ve hala silinen butonlar varsa, bunları temizle
+    if (initialState.isLoaded && deletedButtons.length > 0 && !hasChanges()) {
+      const timer = setTimeout(() => {
+        setDeletedButtons([]);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [links, initialState.isLoaded]);
+
+  // İlk yükleme effect'i
   useEffect(() => {
     if (links && links.length > 0) {
       const activeKeys = [];
@@ -342,6 +493,20 @@ const SocialButtons = ({ newSocials }) => {
 
       setActiveButtons(activeKeys);
       setSocialLinks(linkData);
+
+      // İlk durumu kaydet
+      setInitialState({
+        activeButtons: [...activeKeys],
+        socialLinks: { ...linkData },
+        isLoaded: true,
+      });
+    } else {
+      // Boş durumda da initial state'i ayarla
+      setInitialState({
+        activeButtons: [],
+        socialLinks: {},
+        isLoaded: true,
+      });
     }
   }, [links]);
 

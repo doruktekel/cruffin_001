@@ -5,7 +5,7 @@ const useSubmitLinks = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const submitLinks = async (linksToSend) => {
+  const submitLinks = async (linksToSend, onSuccess) => {
     setLoading(true);
     setError(null);
     try {
@@ -18,13 +18,21 @@ const useSubmitLinks = () => {
 
       // Eğer response başarılı ise
       if (res.ok) {
-        toast.success("Linkler başarıyla kaydedildi!", {});
+        toast.success("Linkler başarıyla kaydedildi!");
+
+        // Success callback'i varsa çağır
+        if (onSuccess && typeof onSuccess === "function") {
+          onSuccess(data);
+        }
+
+        return data; // Data'yı return et
       } else {
         throw new Error(data?.error || "Linkler kaydedilemedi");
       }
     } catch (error) {
       setError(error.message || "Linkler gonderilemedi");
-      toast.error(error?.message || "Linkler gonderilemedi", {});
+      toast.error(error?.message || "Linkler gonderilemedi");
+      throw error; // Hata'yı yeniden fırlat
     } finally {
       setLoading(false);
     }
