@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Save, Loader2 } from "lucide-react";
 import {
@@ -38,7 +38,7 @@ const ProductButtons = ({ newProducts, categories }) => {
       ...product,
       originalImage: product.image || "",
       pendingImage: null,
-      markedForDeletion: false, // Yeni alan eklendi
+      markedForDeletion: false,
     }))
   );
 
@@ -50,7 +50,14 @@ const ProductButtons = ({ newProducts, categories }) => {
   const newProductInputRef = useRef(null);
   const { loading, error, submitProducts } = useSubmitProducts();
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  // Optimized sensors configuration
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Minimum distance before drag starts
+      },
+    })
+  );
 
   useEffect(() => {
     const filtered = allProducts.filter(
@@ -59,23 +66,26 @@ const ProductButtons = ({ newProducts, categories }) => {
     setProducts(filtered);
   }, [selectedCategory, allProducts]);
 
-  const handleDragEnd = (event) => {
+  // Optimized drag end handler
+  const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = products.findIndex((item) => item._id === active.id);
-    const newIndex = products.findIndex((item) => item._id === over.id);
+    setProducts((prevProducts) => {
+      const oldIndex = prevProducts.findIndex((item) => item._id === active.id);
+      const newIndex = prevProducts.findIndex((item) => item._id === over.id);
 
-    const newOrder = arrayMove(products, oldIndex, newIndex);
-    setProducts(
-      newOrder.map((p, i) => ({
+      if (oldIndex === -1 || newIndex === -1) return prevProducts;
+
+      const newOrder = arrayMove(prevProducts, oldIndex, newIndex);
+      return newOrder.map((p, i) => ({
         ...p,
         order: i,
-      }))
-    );
-  };
+      }));
+    });
+  }, []);
 
-  const handleAddProduct = () => {
+  const handleAddProduct = useCallback(() => {
     const tempId = `temp-${Date.now()}`;
     const newProduct = {
       tempId,
@@ -95,18 +105,18 @@ const ProductButtons = ({ newProducts, categories }) => {
       isAvailable: true,
       allergens: [],
       order: products.length,
-      markedForDeletion: false, // Yeni alan
+      markedForDeletion: false,
     };
 
-    setProducts([...products, newProduct]);
-    setAllProducts([...allProducts, newProduct]);
+    setProducts((prev) => [...prev, newProduct]);
+    setAllProducts((prev) => [...prev, newProduct]);
 
     setTimeout(() => {
       newProductInputRef.current?.focus();
     }, 0);
-  };
+  }, [selectedCategory, products.length]);
 
-  const handleProductChange = (id, field, value) => {
+  const handleProductChange = useCallback((id, field, value) => {
     setProducts((prev) =>
       prev.map((p) =>
         (p._id || p.tempId) === id ? { ...p, [field]: value } : p
@@ -118,29 +128,25 @@ const ProductButtons = ({ newProducts, categories }) => {
         (p._id || p.tempId) === id ? { ...p, [field]: value } : p
       )
     );
-  };
+  }, []);
 
-  const handleProductDelete = (id) => {
+  const handleProductDelete = useCallback((id) => {
     setProducts((prev) => prev.filter((p) => (p._id || p.tempId) !== id));
     setAllProducts((prev) => prev.filter((p) => (p._id || p.tempId) !== id));
-  };
+  }, []);
 
-  // Güncellenen validasyon fonksiyonu - silinmek üzere işaretlenen ürünleri hariç tut
-  const validateProducts = (activeProducts) => {
+  // Optimized validation function
+  const validateProducts = useCallback((activeProducts) => {
     const errors = [];
-
-    // Silinmek üzere işaretlenmemiş ürünleri filtrele
     const productsToValidate = activeProducts.filter(
       (p) => !p.markedForDeletion
     );
 
-    productsToValidate.forEach((product, index) => {
-      // İsim kontrolü
+    productsToValidate.forEach((product) => {
       if (!product.name?.trim()) {
         errors.push(`Ürün adı girilmesi zorunludur !`);
       }
 
-      // Fiyat kontrolü
       if (
         product.price === null ||
         product.price === undefined ||
@@ -150,7 +156,6 @@ const ProductButtons = ({ newProducts, categories }) => {
         errors.push(`Fiyat girilmesi zorunludur ve pozitif olmalıdır !`);
       }
 
-      // Görsel kontrolü
       const hasImage =
         product.image ||
         product.originalImage ||
@@ -162,83 +167,160 @@ const ProductButtons = ({ newProducts, categories }) => {
     });
 
     return errors;
-  };
+  }, []);
 
-  // Pending resimleri upload et
-  const uploadPendingImages = async (productsToProcess) => {
-    const processedProducts = [];
+  // Upload pending images function
+  const uploadPendingImages = useCallback(
+    async (productsToProcess) => {
+      const processedProducts = [];
 
-    for (let i = 0; i < productsToProcess.length; i++) {
-      const product = productsToProcess[i];
-      let processedProduct = { ...product };
+      for (let i = 0; i < productsToProcess.length; i++) {
+        const product = productsToProcess[i];
+        let processedProduct = { ...product };
 
-      // Eğer pending image varsa upload et
-      if (product.pendingImage && product.pendingImage.base64) {
-        const productIndex = products.findIndex(
-          (p) => (p._id || p.tempId) === (product._id || product.tempId)
-        );
+        if (product.pendingImage && product.pendingImage.base64) {
+          const productIndex = products.findIndex(
+            (p) => (p._id || p.tempId) === (product._id || product.tempId)
+          );
 
-        setUploadingStates((prev) => ({ ...prev, [productIndex]: true }));
+          setUploadingStates((prev) => ({ ...prev, [productIndex]: true }));
 
-        try {
-          // Eski resmi sil (eğer varsa ve değişmişse)
-          const currentImage = product.originalImage || product.image;
-          if (currentImage) {
-            const publicId = extractPublicId(currentImage);
-            if (publicId) {
-              await fetch("/api/delete-image", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ public_id: publicId }),
-              });
+          try {
+            const currentImage = product.originalImage || product.image;
+            if (currentImage) {
+              const publicId = extractPublicId(currentImage);
+              if (publicId) {
+                await fetch("/api/delete-image", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ public_id: publicId }),
+                });
+              }
             }
-          }
 
-          // Yeni resmi upload et
-          const res = await fetch("/api/upload-image", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: product.pendingImage.base64 }),
-          });
+            const res = await fetch("/api/upload-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: product.pendingImage.base64 }),
+            });
 
-          const data = await res.json();
-          if (!res.ok || data.error) {
-            throw new Error(data.error || "Görsel yüklenemedi.");
-          }
+            const data = await res.json();
+            if (!res.ok || data.error) {
+              throw new Error(data.error || "Görsel yüklenemedi.");
+            }
 
-          if (data.url) {
-            processedProduct.image = data.url;
-            processedProduct.originalImage = data.url;
+            if (data.url) {
+              processedProduct.image = data.url;
+              processedProduct.originalImage = data.url;
+              processedProduct.pendingImage = null;
+            }
+          } catch (err) {
+            toast.error(`Ürün görseli yüklenemedi: ${err.message}`);
+            processedProduct.image = product.originalImage || "";
             processedProduct.pendingImage = null;
+          } finally {
+            setUploadingStates((prev) => ({ ...prev, [productIndex]: false }));
           }
-        } catch (err) {
-          toast.error(`Ürün görseli yüklenemedi: ${err.message}`);
-          // Upload başarısız olursa eski resmi koru
-          processedProduct.image = product.originalImage || "";
-          processedProduct.pendingImage = null;
-        } finally {
-          setUploadingStates((prev) => ({ ...prev, [productIndex]: false }));
+        }
+
+        processedProducts.push(processedProduct);
+      }
+
+      return processedProducts;
+    },
+    [products]
+  );
+
+  // Değişiklikleri kontrol etme fonksiyonu
+  const hasChanges = useCallback(() => {
+    // Silinmek üzere işaretlenen ürün var mı?
+    const hasMarkedForDeletion = products.some((p) => p.markedForDeletion);
+    if (hasMarkedForDeletion) return true;
+
+    // Pending image'ı olan ürün var mı?
+    const hasPendingImages = products.some(
+      (p) => p.pendingImage && p.pendingImage.base64
+    );
+    if (hasPendingImages) return true;
+
+    // Yeni eklenen ürün var mı? (tempId'li)
+    const hasNewProducts = products.some((p) => p.tempId);
+    if (hasNewProducts) return true;
+
+    // Mevcut ürünlerde değişiklik var mı kontrol et
+    const originalProducts = newProducts.filter(
+      (p) => p.category === selectedCategory
+    );
+
+    if (products.length !== originalProducts.length) return true;
+
+    for (let i = 0; i < products.length; i++) {
+      const current = products[i];
+      const original = originalProducts.find((p) => p._id === current._id);
+
+      if (!original) continue;
+
+      // Temel alanları karşılaştır
+      const fieldsToCheck = [
+        "name",
+        "price",
+        "description",
+        "calories",
+        "isVegan",
+        "isVegetarian",
+        "isGlutenFree",
+        "isSpicy",
+        "isAvailable",
+        "order",
+      ];
+
+      for (const field of fieldsToCheck) {
+        if (current[field] !== original[field]) {
+          return true;
         }
       }
 
-      processedProducts.push(processedProduct);
+      // Array alanları karşılaştır
+      const arrayFieldsToCheck = ["ingredients", "allergens"];
+      for (const field of arrayFieldsToCheck) {
+        const currentArray = current[field] || [];
+        const originalArray = original[field] || [];
+
+        if (currentArray.length !== originalArray.length) {
+          return true;
+        }
+
+        for (let j = 0; j < currentArray.length; j++) {
+          if (currentArray[j] !== originalArray[j]) {
+            return true;
+          }
+        }
+      }
+
+      // Resim değişikliği kontrol et
+      if (current.image !== original.image) {
+        return true;
+      }
     }
 
-    return processedProducts;
-  };
+    return false;
+  }, [products, newProducts, selectedCategory]);
 
-  const handleSubmit = async () => {
-    // 2 saniye içinde tekrar submit'i engelle
+  const handleSubmit = useCallback(async () => {
     const now = Date.now();
     if (now - lastSubmitTime < 2000) {
       return;
     }
     setLastSubmitTime(now);
-    try {
-      // Silinmek üzere işaretlenmemiş ürünleri al
-      const activeProducts = products.filter((p) => !p.markedForDeletion);
 
-      // Order'ları güncelle
+    try {
+      // Değişiklik kontrolü
+      if (!hasChanges()) {
+        toast.info("Herhangi bir değişiklik yapılmadı.");
+        return;
+      }
+
+      const activeProducts = products.filter((p) => !p.markedForDeletion);
       const productsWithOrder = activeProducts.map((p, index) => ({
         ...p,
         order: index,
@@ -247,19 +329,14 @@ const ProductButtons = ({ newProducts, categories }) => {
       const validationErrors = validateProducts(productsWithOrder);
 
       if (validationErrors.length > 0) {
-        // İlk hatayı toast olarak göster
         toast.error(validationErrors[0]);
         return;
       }
 
-      // Validasyon geçtiyse, resimleri upload et
       const processedProducts = await uploadPendingImages(productsWithOrder);
-
-      // Sonra veritabanına kaydet
       const updated = await submitProducts(processedProducts);
 
       if (updated) {
-        // State'leri güncelle
         const updatedProductsWithMeta = updated.map((p) => ({
           ...p,
           _id: p._id.toString(),
@@ -270,7 +347,6 @@ const ProductButtons = ({ newProducts, categories }) => {
 
         setProducts(updatedProductsWithMeta);
 
-        // AllProducts'ı da güncelle - silinmek üzere işaretlenen ürünleri kaldır
         setAllProducts((prev) => {
           const otherCategoryProducts = prev.filter(
             (p) => p.category !== selectedCategory
@@ -282,17 +358,45 @@ const ProductButtons = ({ newProducts, categories }) => {
       console.error("Submit error:", error);
       toast.error("Kayıt sırasında bir hata oluştu.");
     }
-  };
+  }, [
+    products,
+    lastSubmitTime,
+    validateProducts,
+    uploadPendingImages,
+    submitProducts,
+    selectedCategory,
+    hasChanges,
+  ]);
 
-  // Herhangi bir pending image var mı kontrol et
-  const hasPendingImages = products.some(
-    (p) => p.pendingImage && p.pendingImage.base64 && !p.markedForDeletion
+  // Memoized computed values
+  const hasPendingImages = useMemo(
+    () =>
+      products.some(
+        (p) => p.pendingImage && p.pendingImage.base64 && !p.markedForDeletion
+      ),
+    [products]
   );
 
-  // Silinmek üzere işaretlenen ürün var mı kontrol et
-  const hasMarkedForDeletion = products.some((p) => p.markedForDeletion);
+  const hasMarkedForDeletion = useMemo(
+    () => products.some((p) => p.markedForDeletion),
+    [products]
+  );
 
-  const isUploading = Object.values(uploadingStates).some(Boolean);
+  const markedForDeletionCount = useMemo(
+    () => products.filter((p) => p.markedForDeletion).length,
+    [products]
+  );
+
+  const isUploading = useMemo(
+    () => Object.values(uploadingStates).some(Boolean),
+    [uploadingStates]
+  );
+
+  // Memoized sortable items
+  const sortableItems = useMemo(
+    () => products.map((p) => p._id || p.tempId),
+    [products]
+  );
 
   return (
     <div className="overflow-hidden mb-4">
@@ -300,10 +404,7 @@ const ProductButtons = ({ newProducts, categories }) => {
         <p className="text-lg font-semibold">Ürünler</p>
       </div>
       <div className="flex justify-between my-4">
-        <Select
-          value={selectedCategory}
-          onValueChange={(val) => setSelectedCategory(val)}
-        >
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
           <SelectTrigger className="w-[200px] cursor-pointer">
             <SelectValue placeholder="Kategori seç" />
           </SelectTrigger>
@@ -333,9 +434,15 @@ const ProductButtons = ({ newProducts, categories }) => {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
+        // Performans optimizasyonu
+        measuring={{
+          droppable: {
+            strategy: "when-dragging",
+          },
+        }}
       >
         <SortableContext
-          items={products.map((p) => p._id || p.tempId)}
+          items={sortableItems}
           strategy={verticalListSortingStrategy}
         >
           {products.map((product, index) => (
@@ -386,9 +493,8 @@ const ProductButtons = ({ newProducts, categories }) => {
 
         {hasMarkedForDeletion && (
           <p className="text-center text-sm text-red-600">
-            {products.filter((p) => p.markedForDeletion).length} ürün silinmek
-            üzere işaretlendi. Kaydet butonuna bastığınızda kalıcı olarak
-            silinecek.
+            {markedForDeletionCount} ürün silinmek üzere işaretlendi. Kaydet
+            butonuna bastığınızda kalıcı olarak silinecek.
           </p>
         )}
       </div>

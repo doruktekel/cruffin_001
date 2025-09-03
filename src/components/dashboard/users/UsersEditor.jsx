@@ -196,17 +196,6 @@ const UsersEditor = ({ users }) => {
     }
   };
 
-  const getRoleBadgeColor = (role) => {
-    switch (role) {
-      case "superadmin":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-      case "admin":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
-    }
-  };
-
   // Silinmeyecek kullanıcıları filtrele
   const activeUsers = usersData.filter((user) => !deletedUsers.has(user._id));
   const approvedCount = activeUsers.filter((user) => user.isApproved).length;
@@ -234,9 +223,9 @@ const UsersEditor = ({ users }) => {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="overflow-hidden mb-4">
       {/* Header */}
-      <div className="text-center space-y-2">
+      <div className="flex flex-col gap-2 text-center mb-4">
         <h2 className="text-xl font-semibold">Kullanıcı Yönetimi</h2>
         <div className="flex justify-center gap-6 text-sm text-gray-600 dark:text-gray-400">
           <span className="flex items-center gap-2">

@@ -31,6 +31,7 @@ import {
 
 const CategoryButtons = ({ newCategories }) => {
   const [activeCategories, setActiveCategories] = useState(newCategories);
+  const [originalCategories, setOriginalCategories] = useState([]); // Orijinal kategorileri takip etmek için
   const [deleteDialog, setDeleteDialog] = useState({
     isOpen: false,
     categoryId: null,
@@ -43,6 +44,42 @@ const CategoryButtons = ({ newCategories }) => {
 
   // Drag & Drop için sensorları ayarlıyoruz
   const sensors = useSensors(useSensor(PointerSensor));
+
+  // Kategorilerde değişiklik olup olmadığını kontrol eden fonksiyon
+  const hasChanges = () => {
+    // Aktif (silinmemiş) kategorileri al
+    const activeNonDeletedCategories = activeCategories.filter(
+      (cat) => !cat.isDeleted
+    );
+
+    // Eğer kategori sayısı farklıysa değişiklik var
+    if (activeNonDeletedCategories.length !== originalCategories.length) {
+      return true;
+    }
+
+    // Her kategoriyi kontrol et
+    for (let i = 0; i < activeNonDeletedCategories.length; i++) {
+      const current = activeNonDeletedCategories[i];
+      const original = originalCategories[i];
+
+      // Yeni kategori eklendiyse (tempId var)
+      if (current.tempId) {
+        return true;
+      }
+
+      // İsim değişmişse
+      if (current.name !== original.name) {
+        return true;
+      }
+
+      // Sıra değişmişse (order farklı)
+      if (current._id !== original._id) {
+        return true;
+      }
+    }
+
+    return false;
+  };
 
   // Drag işlemi bittiğinde sırayı güncelleme
   const handleDragEnd = (event) => {
@@ -83,6 +120,12 @@ const CategoryButtons = ({ newCategories }) => {
     }
     setLastSubmitTime(now);
 
+    // Değişiklik kontrolü
+    if (!hasChanges()) {
+      toast.info("Herhangi bir değişiklik yapılmadı.");
+      return;
+    }
+
     // Silinen kategorileri filtreliyoruz
     const activeNonDeletedCategories = activeCategories.filter(
       (cat) => !cat.isDeleted
@@ -93,9 +136,7 @@ const CategoryButtons = ({ newCategories }) => {
     );
 
     if (hasEmptyName) {
-      toast.error("Tüm kategorilere isim girmeniz gerekmektedir !", {
-        position: "top-right",
-      });
+      toast.error("Tüm kategorilere isim girmeniz gerekmektedir !");
       return;
     }
 
@@ -114,13 +155,15 @@ const CategoryButtons = ({ newCategories }) => {
 
     const newServerCategories = await submitCategories(categoriesToSend);
     if (newServerCategories) {
-      setActiveCategories(
-        newServerCategories.map((cat) => ({
-          ...cat,
-          _id: cat._id.toString(),
-          isDeleted: false,
-        }))
-      );
+      const updatedCategories = newServerCategories.map((cat) => ({
+        ...cat,
+        _id: cat._id.toString(),
+        isDeleted: false,
+      }));
+
+      setActiveCategories(updatedCategories);
+      // Orijinal kategorileri de güncelle
+      setOriginalCategories([...updatedCategories]);
     }
   };
 
@@ -196,9 +239,14 @@ const CategoryButtons = ({ newCategories }) => {
 
   useEffect(() => {
     // Eğer mevcut kategoriler varsa onları al ve isDeleted field'ını ekle
-    setActiveCategories(
-      newCategories.map((cat) => ({ ...cat, isDeleted: false }))
-    );
+    const categoriesWithDeleteFlag = newCategories.map((cat) => ({
+      ...cat,
+      isDeleted: false,
+    }));
+
+    setActiveCategories(categoriesWithDeleteFlag);
+    // Orijinal kategorileri de kaydet
+    setOriginalCategories([...categoriesWithDeleteFlag]);
   }, [newCategories]);
 
   // Aktif (silinmemiş) kategorileri filtrele
@@ -209,7 +257,7 @@ const CategoryButtons = ({ newCategories }) => {
     <>
       <form onSubmit={handleSubmit} className="overflow-hidden mb-4">
         <div className="flex justify-center items-center">
-          <p className="text-lg font-semibold">Kategoriler</p>
+          <p className="text-lg font-semibold">Kategori Yönetimi</p>
         </div>
         <div className="my-4 flex justify-end">
           <Button

@@ -68,6 +68,11 @@ const MenuProducts = ({ products, activeCategory }) => {
               onContextMenu={(e) => e.preventDefault()}
               draggable={false}
             />
+            {product.calories !== 0 && (
+              <p className="text-center text-sm font-bold text-gray-600 mt-1 md:mt-2 capitalize">
+                {product.calories} Kalori
+              </p>
+            )}
           </div>
 
           {/* Bilgiler */}
@@ -90,11 +95,24 @@ const MenuProducts = ({ products, activeCategory }) => {
               {product.ingredients.map((ingredient, index) => (
                 <span
                   key={index}
-                  className="bg-gray-200 text-sm text-gray-800 md:px-2 px-1 py-1 rounded-sm md:rounded-md capitalize"
+                  className="text-amber-700 bg-amber-50 text-sm  md:px-2 px-1 py-1 rounded-sm md:rounded-md capitalize"
                 >
-                  {ingredient}
+                  {ingredient.toLocaleLowerCase()}
                 </span>
               ))}
+            </div>
+            <div className="flex items-center gap-1 md:gap-2 mt-1 md:mt-2">
+              <p className="text-sm text-gray-600">Alerjen İçerikleri:</p>
+              <div className="flex flex-wrap gap-1 md:gap-2 ">
+                {product.allergens.map((ingredient, index) => (
+                  <span
+                    key={index}
+                    className="text-amber-50 bg-amber-700 text-sm md:px-2 px-1 py-1 rounded-sm md:rounded-md capitalize"
+                  >
+                    {ingredient.toLocaleLowerCase()}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {/* İyileştirilmiş ikonlar */}
