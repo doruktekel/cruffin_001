@@ -105,6 +105,62 @@
 //     </div>
 //   );
 // }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// import Header from "@/components/header/Header";
+// import Tent from "@/components/Tent";
+// import Image from "next/image";
+// import MenuPage from "@/components/menu/Menu";
+// import InfoWrapper from "@/components/info/InfoWrapper";
+// import GalleryWrapper from "@/components/gallery/GalleryWrapper";
+// import FooterWrapper from "@/components/footer/FooterWrapper";
+
+// export default function Home() {
+//   return (
+//     <div className="flex flex-col items-center justify-center w-full">
+//       <Header />
+//       <Tent />
+
+//       {/* MenuPage - Scroll işlevselliği korunacak şekilde */}
+//       <div className="w-full">
+//         <MenuPage />
+//       </div>
+
+//       {/* Video Section - Yatay scroll önleme */}
+//       <div className="relative w-screen max-w-full h-[600px] mt-20 md:mt-32 overflow-hidden">
+//         <video
+//           autoPlay
+//           muted
+//           loop
+//           className="w-full h-full object-cover"
+//           playsInline
+//         >
+//           <source src="/yatayvideo.mp4" type="video/mp4" />
+//           Your browser does not support the video tag.
+//         </video>
+
+//         {/* Sarı / sıcak overlay */}
+//         <div className="absolute inset-0 bg-amber-200/20 mix-blend-multiply pointer-events-none"></div>
+//       </div>
+
+//       <InfoWrapper />
+
+//       {/* Image Section - Yatay scroll önleme */}
+//       <div className="w-screen max-w-full mt-20 md:mt-32 overflow-hidden">
+//         <Image
+//           src="/bg_patis.webp"
+//           width={1920}
+//           height={300}
+//           className="w-full h-[300px] object-cover"
+//           alt="bg_patis"
+//         />
+//       </div>
+
+//       <GalleryWrapper />
+
+//       <FooterWrapper />
+//     </div>
+//   );
+// }
 
 import Header from "@/components/header/Header";
 import Tent from "@/components/Tent";
@@ -116,48 +172,55 @@ import FooterWrapper from "@/components/footer/FooterWrapper";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <Header />
-      <Tent />
+    // Ana container - yatay scroll tamamen engellenir
+    <div className="w-full min-h-screen overflow-x-hidden">
+      <div className="flex flex-col items-center justify-center w-full">
+        <Header />
+        <Tent />
 
-      {/* MenuPage - Scroll işlevselliği korunacak şekilde */}
-      <div className="w-full">
-        <MenuPage />
+        {/* MenuPage - Özel wrapper ile scroll korunur */}
+        <div className="w-full" style={{ overflowX: "auto" }}>
+          <MenuPage />
+        </div>
+
+        {/* Video Section - Viewport sınırları içinde */}
+        <div className="w-full mt-20 md:mt-32">
+          <div className="relative h-[600px] overflow-hidden">
+            <video
+              autoPlay
+              muted
+              loop
+              className="w-full h-full object-cover"
+              playsInline
+            >
+              <source src="/yatayvideo.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+
+            {/* Sarı / sıcak overlay */}
+            <div className="absolute inset-0 bg-amber-200/20 mix-blend-multiply pointer-events-none"></div>
+          </div>
+        </div>
+
+        <InfoWrapper />
+
+        {/* Image Section - Viewport sınırları içinde */}
+        <div className="w-full mt-20 md:mt-32">
+          <div className="overflow-hidden">
+            <Image
+              src="/bg_patis.webp"
+              width={1920}
+              height={300}
+              className="w-full h-[300px] object-cover"
+              alt="bg_patis"
+            />
+          </div>
+        </div>
+
+        <GalleryWrapper />
+
+        <FooterWrapper />
       </div>
-
-      {/* Video Section - Yatay scroll önleme */}
-      <div className="relative w-screen max-w-full h-[600px] mt-20 md:mt-32 overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          className="w-full h-full object-cover"
-          playsInline
-        >
-          <source src="/yatayvideo.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Sarı / sıcak overlay */}
-        <div className="absolute inset-0 bg-amber-200/20 mix-blend-multiply pointer-events-none"></div>
-      </div>
-
-      <InfoWrapper />
-
-      {/* Image Section - Yatay scroll önleme */}
-      <div className="w-screen max-w-full mt-20 md:mt-32 overflow-hidden">
-        <Image
-          src="/bg_patis.webp"
-          width={1920}
-          height={300}
-          className="w-full h-[300px] object-cover"
-          alt="bg_patis"
-        />
-      </div>
-
-      <GalleryWrapper />
-
-      <FooterWrapper />
     </div>
   );
 }
