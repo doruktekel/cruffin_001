@@ -514,7 +514,7 @@ const SocialButtons = ({ newSocials }) => {
     <>
       <div className="flex flex-col gap-4 overflow-hidden mb-4">
         <div className="flex justify-center items-center ">
-          <p className="text-lg font-semibold">Sosyal Medya</p>
+          <p className="text-lg font-semibold">Sosyal Medya Yönetimi</p>
         </div>
         <form onSubmit={handleSubmit} className="overflow-hidden">
           <DndContext

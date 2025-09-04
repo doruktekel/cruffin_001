@@ -179,7 +179,7 @@ const InfoEditor = ({ infos }) => {
   return (
     <div className=" flex flex-col gap-4 overflow-hidden mb-4">
       <div className="flex justify-center items-center">
-        <p className="text-lg font-semibold">Hakkımızda</p>
+        <p className="text-lg font-semibold">Hakkımızda Bilgileri</p>
       </div>
       {items.map((item, index) => (
         <div

@@ -401,7 +401,7 @@ const ProductButtons = ({ newProducts, categories }) => {
   return (
     <div className="overflow-hidden mb-4">
       <div className="flex justify-center items-center">
-        <p className="text-lg font-semibold">Ürünler</p>
+        <p className="text-lg font-semibold">Ürün Yönetimi</p>
       </div>
       <div className="flex justify-between my-4">
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>

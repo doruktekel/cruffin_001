@@ -23,23 +23,41 @@ const ContactEditor = ({ contactInfo }) => {
     email: "",
     mapLink: "",
   });
+  const [originalData, setOriginalData] = useState({
+    address: "",
+    phone: "",
+    email: "",
+    mapLink: "",
+  });
   const [lastSubmitTime, setLastSubmitTime] = useState(0);
 
   const { submitContact, loading, error } = useSubmitContact();
 
   useEffect(() => {
     if (contactInfo) {
-      setContactData({
+      const initialData = {
         address: contactInfo.address,
         phone: contactInfo.phone,
         email: contactInfo.email,
         mapLink: contactInfo.mapLink,
-      });
+      };
+      setContactData(initialData);
+      setOriginalData(initialData);
     }
   }, [contactInfo]);
 
   const handleChange = (field, value) => {
     setContactData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Değişiklik kontrolü fonksiyonu
+  const hasChanges = () => {
+    return (
+      contactData.address !== originalData.address ||
+      contactData.phone !== originalData.phone ||
+      contactData.email !== originalData.email ||
+      contactData.mapLink !== originalData.mapLink
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -50,6 +68,13 @@ const ContactEditor = ({ contactInfo }) => {
       return;
     }
     setLastSubmitTime(now);
+
+    // Değişiklik kontrolü
+    if (!hasChanges()) {
+      toast.info("Herhangi bir değişiklik yapılmadı.");
+      return;
+    }
+
     const { address, phone, email, mapLink } = contactData;
 
     // Boş alanları kontrol et
@@ -78,6 +103,8 @@ const ContactEditor = ({ contactInfo }) => {
 
     try {
       await submitContact(contactData);
+      // Başarılı kayıt sonrası orijinal veriyi güncelle
+      setOriginalData(contactData);
     } catch (err) {
       console.error("Güncelleme hatası:", err);
     }
@@ -86,7 +113,7 @@ const ContactEditor = ({ contactInfo }) => {
   return (
     <div className="overflow-hidden mb-4">
       <div className="flex justify-center items-center">
-        <p className="text-lg font-semibold">İletişim</p>
+        <p className="text-lg font-semibold">İletişim Bilgileri</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 ">

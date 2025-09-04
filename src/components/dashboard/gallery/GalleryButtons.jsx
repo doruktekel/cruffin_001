@@ -23,6 +23,8 @@ const GalleryButtons = ({ newGalleries }) => {
   const [galleries, setGalleries] = useState(newGalleries || []);
   const [uploadingStates, setUploadingStates] = useState([]);
   const [lastSubmitTime, setLastSubmitTime] = useState(0);
+  // ✅ YENİ: Başlangıç durumunu takip etmek için
+  const [initialGalleries, setInitialGalleries] = useState([]);
 
   const { submitGallery, loading } = useSubmitGallery();
   const sensors = useSensors(useSensor(PointerSensor));
@@ -64,7 +66,45 @@ const GalleryButtons = ({ newGalleries }) => {
     });
     setGalleries(filled);
     setUploadingStates(new Array(10).fill(false));
+
+    // ✅ YENİ: Başlangıç durumunu kaydet
+    setInitialGalleries(JSON.parse(JSON.stringify(filled)));
   }, [newGalleries]);
+
+  // ✅ YENİ: Değişiklik algılama fonksiyonu
+  const hasChanges = () => {
+    if (initialGalleries.length === 0) return false;
+
+    // Sıralama değişikliği kontrol et
+    const orderChanged = galleries.some((item, index) => {
+      const initialItem = initialGalleries.find(
+        (initial) => initial._id === item._id
+      );
+      return !initialItem || initialGalleries.indexOf(initialItem) !== index;
+    });
+
+    if (orderChanged) return true;
+
+    // Her item için değişiklik kontrol et
+    return galleries.some((item, index) => {
+      const initialItem = initialGalleries[index];
+      if (!initialItem) return true;
+
+      // Görsel değişikliği
+      if (item.pendingImage?.base64) return true;
+
+      // isActive değişikliği
+      if (item.isActive !== initialItem.isActive) return true;
+
+      // title değişikliği
+      if (item.title !== initialItem.title) return true;
+
+      // description değişikliği
+      if (item.description !== initialItem.description) return true;
+
+      return false;
+    });
+  };
 
   const handleImageSelect = (index, file) => {
     if (!file) return;
@@ -155,6 +195,12 @@ const GalleryButtons = ({ newGalleries }) => {
     }
     setLastSubmitTime(now);
 
+    // ✅ YENİ: Değişiklik kontrolü
+    if (!hasChanges()) {
+      toast.info("Herhangi bir değişiklik yapılmadı.");
+      return;
+    }
+
     // ✅ Client-side: Aktif görsellerin sayısını kontrol et
     const activeImages = galleries.filter((item) => item.isActive === true);
     if (activeImages.length < 5) {
@@ -188,11 +234,6 @@ const GalleryButtons = ({ newGalleries }) => {
           const targetIndex = savedItem.order;
 
           if (newGalleries[targetIndex]) {
-            // console.log(`Index ${targetIndex} güncelleniyor:`, {
-            //   eskiImage: newGalleries[targetIndex].image,
-            //   yeniImage: savedItem.images,
-            // });
-
             // ✅ DÜZELT: Dönen veriyi de doğru şekilde işle
             const savedImageUrl = getImageFromGallery(savedItem);
 
@@ -213,13 +254,26 @@ const GalleryButtons = ({ newGalleries }) => {
 
         return newGalleries;
       });
+
+      // ✅ YENİ: Başarılı kaydetme sonrası başlangıç durumunu güncelle
+      setInitialGalleries(
+        JSON.parse(
+          JSON.stringify(
+            galleries.map((gallery, index) => ({
+              ...gallery,
+              order: index,
+              pendingImage: null, // Pending image'ları temizle
+            }))
+          )
+        )
+      );
     }
   };
 
   return (
     <div className="flex flex-col gap-4 overflow-hidden mb-4">
       <div className="flex justify-center items-center">
-        <p className="text-lg font-semibold">Galeri</p>
+        <p className="text-lg font-semibold">Galeri Yönetimi</p>
       </div>
 
       <DndContext
