@@ -18,7 +18,7 @@ const Header = () => {
       </video>
 
       <div className="fixed z-10 top-2 w-full justify-center items-center text-center flex    flex-col  text-amber-700">
-        <h1 className="text-5xl font-family-marcellus tracking-wide  text-amber-700">
+        <h1 className="text-5xl font-family-marcellus tracking-wide font-bold text-amber-700">
           CRUFFIN
         </h1>
         <Navbars />

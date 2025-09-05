@@ -58,7 +58,7 @@ async function handleRegister(req) {
       return NextResponse.json(
         {
           success: true,
-          message: "Kayıt başarılı! Email onayı gönderildi.BOTUM BEN ASLANIM",
+          message: "Kayıt başarılı! Email onayı gönderildi.",
         },
         {
           status: 201,
@@ -79,7 +79,7 @@ async function handleRegister(req) {
         {
           error: "Bu email adresi ile zaten bir kullanıcı kayıtlı!",
           fieldErrors: {
-            email: ["Bu email adresi kullanımda"],
+            email: ["Bu email adresi ile zaten bir kullanıcı kayıtlı!"],
           },
         },
         { status: 400 }

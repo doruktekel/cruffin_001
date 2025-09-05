@@ -52,19 +52,37 @@ export default function RegisterPage() {
   };
 
   const router = useRouter();
-  const { loading, error, userRegister, user, userCheck, rateLimitInfo } =
-    useStore();
+  const {
+    loading,
+    error,
+    userRegister,
+    user,
+    userCheck,
+    rateLimitInfo,
+    fieldErrors: storeFieldErrors,
+    clearErrors,
+    clearRateLimit,
+  } = useStore();
 
   const handleFieldTouch = (fieldName) => {
     setTouchedFields((prev) => ({ ...prev, [fieldName]: true }));
   };
 
-  // ✅ FIXED: Email validation with proper error clearing
+  // ✅ Store'dan gelen field errors'ları local state ile birleştir
+  const combinedFieldErrors = {
+    ...fieldErrors,
+    ...storeFieldErrors,
+  };
+
   const handleEmailChange = (e) => {
     const emailValue = e.target.value;
     setFormData((prev) => ({ ...prev, email: emailValue }));
 
-    // ✅ Clear error if email is empty
+    // ✅ Store'dan gelen email error'ını temizle
+    if (storeFieldErrors.email) {
+      clearErrors();
+    }
+
     if (!emailValue.trim()) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -73,7 +91,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // ✅ Validate if field has been touched or has value
     if (touchedFields.email || emailValue) {
       try {
         const emailValidation = validateEmail(emailValue);
@@ -91,19 +108,16 @@ export default function RegisterPage() {
     }
   };
 
-  // ✅ FIXED: Password validation with proper error clearing
   const handlePasswordChange = (e) => {
     const passwordValue = e.target.value;
     setFormData((prev) => ({ ...prev, password: passwordValue }));
 
-    // ✅ Clear error if password is empty
     if (!passwordValue.trim()) {
       setFieldErrors((prev) => ({
         ...prev,
         password: null,
       }));
 
-      // Also clear confirmPassword error if it exists
       if (formData.confirmPassword && !formData.confirmPassword) {
         setFieldErrors((prev) => ({
           ...prev,
@@ -113,7 +127,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // ✅ Validate if field has been touched or has value
     if (touchedFields.password || passwordValue) {
       try {
         const passwordValidation = validatePassword(passwordValue);
@@ -132,7 +145,6 @@ export default function RegisterPage() {
       }
     }
 
-    // ✅ Confirm password kontrolü
     if (formData.confirmPassword) {
       if (passwordValue !== formData.confirmPassword) {
         setFieldErrors((prev) => ({
@@ -148,12 +160,10 @@ export default function RegisterPage() {
     }
   };
 
-  // ✅ FIXED: Confirm password validation with proper error clearing
   const handleConfirmPasswordChange = (e) => {
     const confirmPasswordValue = e.target.value;
     setFormData((prev) => ({ ...prev, confirmPassword: confirmPasswordValue }));
 
-    // ✅ Clear error if confirmPassword is empty
     if (!confirmPasswordValue.trim()) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -162,7 +172,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // ✅ Validate if field has been touched or has value
     if (touchedFields.confirmPassword || confirmPasswordValue) {
       if (confirmPasswordValue !== formData.password) {
         setFieldErrors((prev) => ({
@@ -178,29 +187,32 @@ export default function RegisterPage() {
     }
   };
 
-  // ✅ Helper functions for validation states
+  // ✅ Validation state helpers - combined errors kullan
   const getEmailValidationState = () => {
     if (!formData.email) return "neutral";
-    if (fieldErrors.email) return "error";
+    if (combinedFieldErrors.email) return "error";
     return "success";
   };
 
   const getPasswordValidationState = () => {
     if (!formData.password) return "neutral";
-    if (fieldErrors.password) return "error";
+    if (combinedFieldErrors.password) return "error";
     return "success";
   };
 
   const getConfirmPasswordValidationState = () => {
     if (!formData.confirmPassword) return "neutral";
-    if (fieldErrors.confirmPassword) return "error";
+    if (combinedFieldErrors.confirmPassword) return "error";
     return "success";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Form validation with proper error handling
+    // ✅ Önceki hataları temizle
+    clearErrors();
+    setFieldErrors({});
+
     let validation;
     try {
       validation = validateRegisterForm(formData);
@@ -213,7 +225,6 @@ export default function RegisterPage() {
     if (!validation.isValid) {
       setFieldErrors(validation.errors);
 
-      // ✅ Toast ile genel validation hatası göster
       const errorMessages = Object.values(validation.errors).flat();
       if (errorMessages.length > 0) {
         toast.error(`Form hatası: ${errorMessages[0]}`);
@@ -224,8 +235,8 @@ export default function RegisterPage() {
       return;
     }
 
-    // Rate limit kontrolü
-    if (rateLimitInfo) {
+    // ✅ Rate limit kontrolü - sadece geçerli rate limit varsa kontrol et
+    if (rateLimitInfo && rateLimitInfo.limit > 0) {
       if (rateLimitInfo.remaining === 0) {
         const resetTime = new Date(rateLimitInfo.resetTime);
         const now = new Date();
@@ -255,7 +266,7 @@ export default function RegisterPage() {
   };
 
   const isFormValid = () => {
-    const hasErrors = Object.values(fieldErrors).some(
+    const hasErrors = Object.values(combinedFieldErrors).some(
       (error) => error !== null
     );
     const hasEmptyFields =
@@ -276,12 +287,19 @@ export default function RegisterPage() {
     }
   }, [user, router]);
 
-  // ✅ Store'dan gelen error'ları toast ile göster
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
   }, [error]);
+
+  // ✅ Sayfa yüklendiğinde rate limit bilgisini temizle
+  useEffect(() => {
+    return () => {
+      // Component unmount olduğunda rate limit bilgisini temizle
+      clearRateLimit();
+    };
+  }, [clearRateLimit]);
 
   const handleConfirmLastAttempt = async () => {
     if (pendingFormSubmission) {
@@ -323,8 +341,10 @@ export default function RegisterPage() {
             >
               İptal
             </AlertDialogCancel>
-            className="cursor-pointer"
-            <AlertDialogAction onClick={handleConfirmLastAttempt}>
+            <AlertDialogAction
+              onClick={handleConfirmLastAttempt}
+              className="cursor-pointer"
+            >
               Devam Et
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -340,6 +360,7 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-4 w-80">
         <HoneyPot onHoneypotChange={handleHoneypotChange} />
 
+        {/* ✅ Rate limit gösterimi - sadece geçerli bilgi varsa göster */}
         {rateLimitInfo && rateLimitInfo.limit > 0 && (
           <div
             className={`px-3 py-2 rounded text-sm border ${
@@ -356,7 +377,6 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {/* ✅ FIXED: Email Input with proper validation styling */}
         <div className="relative">
           <Input
             name="email"
@@ -386,12 +406,13 @@ export default function RegisterPage() {
             size={20}
           />
         </div>
-        {/* ✅ Email Error Display */}
-        {fieldErrors.email && (
-          <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+        {/* ✅ Combined field errors kullan */}
+        {combinedFieldErrors.email && (
+          <p className="text-red-500 text-sm mt-1">
+            {combinedFieldErrors.email}
+          </p>
         )}
 
-        {/* ✅ FIXED: Password Input with proper validation styling */}
         <div className="relative">
           <Input
             name="password"
@@ -431,22 +452,22 @@ export default function RegisterPage() {
           </button>
         </div>
 
-        {/* ✅ Password Error Display */}
-        {fieldErrors.password && (
+        {combinedFieldErrors.password && (
           <div className="mt-2 space-y-1">
-            {Array.isArray(fieldErrors.password) ? (
-              fieldErrors.password.map((error, index) => (
+            {Array.isArray(combinedFieldErrors.password) ? (
+              combinedFieldErrors.password.map((error, index) => (
                 <p key={index} className="text-red-500 text-sm">
                   • {error}
                 </p>
               ))
-            ) : typeof fieldErrors.password === "string" ? (
-              <p className="text-red-500 text-sm">• {fieldErrors.password}</p>
+            ) : typeof combinedFieldErrors.password === "string" ? (
+              <p className="text-red-500 text-sm">
+                • {combinedFieldErrors.password}
+              </p>
             ) : null}
           </div>
         )}
 
-        {/* ✅ FIXED: Confirm Password Input with proper validation styling */}
         <div className="relative">
           <Input
             name="confirmPassword"
@@ -485,25 +506,30 @@ export default function RegisterPage() {
             {showSecondPass ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
-        {/* ✅ Confirm Password Error Display */}
-        {fieldErrors.confirmPassword && (
+        {combinedFieldErrors.confirmPassword && (
           <p className="text-red-500 text-sm mt-1">
-            {fieldErrors.confirmPassword}
+            {combinedFieldErrors.confirmPassword}
           </p>
         )}
 
         <Button
           type="submit"
           className={`w-full border py-2 rounded transition-all duration-300 ease-in-out mt-4 ${
-            isFormValid() && !loading && rateLimitInfo?.remaining !== 0
+            isFormValid() &&
+            !loading &&
+            (!rateLimitInfo || rateLimitInfo.remaining !== 0)
               ? "hover:cursor-pointer "
               : "cursor-not-allowed bg-gray-300 text-gray-500"
           }`}
-          disabled={loading || !isFormValid() || rateLimitInfo?.remaining === 0}
+          disabled={
+            loading ||
+            !isFormValid() ||
+            (rateLimitInfo && rateLimitInfo.remaining === 0)
+          }
         >
           {loading
             ? "Kayıt Olunuyor..."
-            : rateLimitInfo?.remaining === 0
+            : rateLimitInfo && rateLimitInfo.remaining === 0
             ? "Kayıt Limiti Aşıldı"
             : "Kayıt Ol"}
         </Button>

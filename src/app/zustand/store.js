@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+
 export const useStore = create(
   devtools(
     (set, get) => ({
@@ -8,7 +9,7 @@ export const useStore = create(
       error: null,
       fieldErrors: {},
       isAuth: false,
-      rateLimitInfo: null, // ✅ Rate limit bilgisi
+      rateLimitInfo: null,
 
       clearErrors: () => set({ error: null, fieldErrors: {} }),
       setFieldErrors: (errors) => set({ fieldErrors: errors }),
@@ -28,7 +29,6 @@ export const useStore = create(
               email,
               password,
               confirmPassword: password,
-              // ✅ Honeypot verilerini gönder
               middleName: honeypot || "",
               profileUrl: website || "",
             }),
@@ -48,7 +48,25 @@ export const useStore = create(
           const data = await res.json();
 
           if (!res.ok) {
-            // Field-specific errors
+            // ✅ Email kayıtlı hatası özel kontrolü
+            if (res.status === 400 && data.error?.includes("email adresi")) {
+              // Rate limit bilgisini temizle çünkü bu geçerli bir hata
+              set({ rateLimitInfo: null });
+
+              // Field-specific errors set et
+              const emailFieldError = data.fieldErrors?.email || [data.error];
+              set({
+                fieldErrors: {
+                  email: Array.isArray(emailFieldError)
+                    ? emailFieldError[0]
+                    : emailFieldError,
+                },
+              });
+
+              throw new Error(data.error);
+            }
+
+            // Diğer field-specific errors
             if (data.fieldErrors) {
               set({ fieldErrors: data.fieldErrors });
             }
@@ -64,15 +82,16 @@ export const useStore = create(
             throw new Error(data?.error || data?.message || "Kayıt başarısız");
           }
 
-          // Başarılı kayıt
-          console.log("Registration successful:", data.message);
-          router.push("/login?message=" + encodeURIComponent(data.message));
-
+          // ✅ Başarılı kayıt - rate limit bilgisini temizle
           set({
             error: null,
             fieldErrors: {},
             loading: false,
+            rateLimitInfo: null, // Başarılı işlemde temizle
           });
+
+          console.log("Registration successful:", data.message);
+          router.push("/login?message=" + encodeURIComponent(data.message));
         } catch (err) {
           console.error("Registration error:", err);
           set({ error: err.message });
@@ -91,26 +110,25 @@ export const useStore = create(
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ email, password, rememberMe }),
-            credentials: "include", // Cookie'ler için
+            credentials: "include",
           });
 
           const data = await res.json();
 
           if (!res.ok) {
-            // Field-specific errors varsa onları set et
             if (data.fieldErrors) {
               set({ fieldErrors: data.fieldErrors });
             }
-
             throw new Error(data?.error || data?.message || "Giriş başarısız");
           }
 
-          // Başarılı login
+          // ✅ Başarılı login - tüm hata bilgilerini temizle
           set({
             user: data.user,
             isAuth: true,
             error: null,
             fieldErrors: {},
+            rateLimitInfo: null, // Login'de de temizle
           });
 
           router.push("/dashboard");
@@ -124,7 +142,6 @@ export const useStore = create(
 
       userLogout: async (router) => {
         console.log("Logout initiated");
-
         set({ loading: true, error: null });
 
         try {
@@ -136,27 +153,23 @@ export const useStore = create(
             credentials: "include",
           });
 
-          const data = await res.json();
-
           if (!res.ok) {
             console.warn("Logout API failed, but continuing with cleanup");
           }
 
-          // State'i temizle
+          // ✅ State'i tamamen temizle
           set({
             user: null,
             isAuth: false,
             loading: false,
             error: null,
             fieldErrors: {},
+            rateLimitInfo: null, // Logout'ta da temizle
           });
 
-          // Browser storage temizle
           if (typeof window !== "undefined") {
             localStorage.removeItem("user");
             sessionStorage.removeItem("user");
-
-            // Manuel cookie temizleme
             document.cookie =
               "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
           }
@@ -166,13 +179,13 @@ export const useStore = create(
         } catch (err) {
           console.error("Logout error:", err);
 
-          // Hata olsa bile temizlik yap
           set({
             user: null,
             isAuth: false,
             loading: false,
             error: null,
             fieldErrors: {},
+            rateLimitInfo: null,
           });
 
           if (typeof window !== "undefined") {
@@ -198,7 +211,6 @@ export const useStore = create(
 
           if (!res.ok) {
             if (data.error === "No Token" || res.status === 401) {
-              // Token yoksa state'i temizle
               set({
                 user: null,
                 isAuth: false,
@@ -220,14 +232,14 @@ export const useStore = create(
           set({
             user: null,
             isAuth: false,
-            error: null, // User check hatalarını gösterme
+            error: null,
           });
         } finally {
           set({ loading: false });
         }
       },
 
-      // State'i manuel temizleme
+      // ✅ Manuel state temizleme
       clearAuth: () => {
         set({
           user: null,
@@ -235,6 +247,7 @@ export const useStore = create(
           error: null,
           fieldErrors: {},
           loading: false,
+          rateLimitInfo: null, // Rate limit bilgisini de temizle
         });
 
         if (typeof window !== "undefined") {
@@ -243,6 +256,11 @@ export const useStore = create(
           document.cookie =
             "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
         }
+      },
+
+      // ✅ Rate limit bilgisini manuel temizleme
+      clearRateLimit: () => {
+        set({ rateLimitInfo: null });
       },
 
       // Utility functions

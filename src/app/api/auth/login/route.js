@@ -37,6 +37,7 @@ export const POST = async (req) => {
       );
     }
 
+    // ✅ ÖNCE ŞİFREYİ KONTROL ET
     const isMatch = await comparePassword(password, user.password);
 
     if (!isMatch) {
@@ -46,8 +47,8 @@ export const POST = async (req) => {
       );
     }
 
+    // ✅ ŞİFRE DOĞRUYSA SONRA ADMIN ONAYINI KONTROL ET
     // Admin yada SuperAdmin yetkisi onayı kontrolü
-
     if (user.role == "user" && !user.isApproved) {
       return NextResponse.json(
         {
@@ -81,7 +82,7 @@ export const POST = async (req) => {
     }
   } catch (error) {
     return NextResponse.json(
-      { error: "Sunucu hatası" + error },
+      { error: "Sunucu hatası: " + error.message },
       { status: 500 }
     );
   }
